@@ -5,25 +5,25 @@
 // "=" means address, "#" mean immediate value
 
 
-.equ SYS_WRITE, 4             	//Macro SYS_WRITE
-.equ SYS_EXIT, 1             	//Macro SYS_EXIT
-.equ STDOUT, 1               	//Macro STDOUT
-.equ size, 12               	//size of label "str"
+.equ SYS_WRITE, 4			//Macro SYS_WRITE
+.equ SYS_EXIT, 1			//Macro SYS_EXIT
+.equ STDOUT, 1				//Macro STDOUT
+.equ size, 13				//size of label "message"
 
 
-.text				// Optional
+	.global _start
 
-.global _start
+	.text				// Optional
 _start:
-  MOV R7, #SYS_WRITE		// write system call No
-  MOV R0, #STDOUT		//
-  MOV R2, #size
-  LDR R1, =str			// Loads address of lable string
-  SWI 0
-  MOV R7, #SYS_EXIT
-  SWI 0
+	MOV R7, #SYS_WRITE		// write system call No
+	MOV R0, #STDOUT		
+	MOV R2, #size
+	LDR R1, =message		// Loads address of lable string
+	SWI 0
+	MOV R7, #SYS_EXIT
+	SWI 0
 
-.data				// optional
-
-str: .ascii "Hello World\n"
+	.data				// optional
+message:
+	.ascii  "Hello, world\n"
 

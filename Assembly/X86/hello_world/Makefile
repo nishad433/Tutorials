@@ -1,5 +1,5 @@
 all:
-	nasm -o hello_world.o -felf64 hello.asm
+	as -o hello_world.o hello.S
 	ld -o hello_world hello_world.o
 
 clean:
