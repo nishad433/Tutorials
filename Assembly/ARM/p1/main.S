@@ -67,10 +67,12 @@ exit:
 	bx  lr
 
 	.data				// optional
-	.balign 4			// align 4 Byte boundary
-
+	
+	.balign 4			// align "user_buf" 4 Byte boundary
 user_buf:
 	.fill SIZE, 1			// user_buf[SIZE]	each of size 1 Byte
+
+	.balign 4			// align "message" 4 Byte boundary
 message:
 	.asciz  "Enter String:"
 end:
