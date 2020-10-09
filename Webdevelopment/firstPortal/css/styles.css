@@ -1,0 +1,25 @@
+/*
+.my-container{
+    border: 5px solid black;
+}
+.my-row{
+    border: 3px solid brown;
+}
+.my-col{
+    border: 2px dashed deeppink; 
+}
+*/
+
+.frame{
+    height: 200px;
+}
+
+.logo{
+    height: 300px;
+}
+img{
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    width: 70%;
+}
