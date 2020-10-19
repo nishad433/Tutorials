@@ -1,25 +1,15 @@
-/*
-.my-container{
-    border: 5px solid black;
-}
-.my-row{
-    border: 3px solid brown;
-}
-.my-col{
-    border: 2px dashed deeppink; 
-}
-*/
-
-.frame{
-    height: 200px;
+body{
+    font-family: 'Poppins', sans-serif;
+    height: 200vh;
 }
 
-.logo{
-    height: 300px;
+.my-navbar{
+    height: 25vh;
 }
-img{
-    margin-left: auto;
-    margin-right: auto;
-    height: auto;
-    width: 70%;
+
+.my-brand{
+}
+.my-navbar-div{
+}
+.my-navbar-nav{
 }
