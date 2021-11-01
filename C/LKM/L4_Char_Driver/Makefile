@@ -19,7 +19,7 @@ endif
 
 obj-m := ncc.o
 
-ncc-objs := main.o
+ncc-objs := main.o fops.o
 
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) $(COMPILE_ARGS) modules

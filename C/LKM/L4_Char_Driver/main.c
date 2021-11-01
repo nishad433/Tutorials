@@ -2,42 +2,19 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/fs.h>
-#include <linux/uaccess.h>
-#include <linux/irq.h>
-#include <linux/interrupt.h>
-#include <linux/irqdesc.h>
+#include "ncc.h"
 
-#define DEVICE_NAME "ncc_char"
 
 static int major;
 static struct class *ncc_char_class=NULL;
 static struct device *ncc_char_device=NULL;
-
-static int ncc_open(struct inode *inode, struct file *file){
-	return 0;
-}
-
-static int ncc_release(struct inode *inode, struct file *file){
-	return 0;
-}
-
-static long ncc_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
-	return 0;
-}
-
-static struct file_operations fops = {
-    .open   = &ncc_open,
-    .release   = &ncc_release,
-    .unlocked_ioctl = &ncc_ioctl,
-};
-
 
 static int __init ncc_char_init(void)
 {
 
 	pr_info("%s: Init\n",DEVICE_NAME);
 	
-	major = register_chrdev(0, DEVICE_NAME, &fops);
+	major = register_chrdev(0, DEVICE_NAME, &ncc_fops);
 	if(major < 0){
 		pr_err("%s: failed to register a major no\n",DEVICE_NAME);
 		return major;
