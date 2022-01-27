@@ -1,4 +1,4 @@
-void KMain(void)
+void main(void)
 {
     while(1){
         ;
