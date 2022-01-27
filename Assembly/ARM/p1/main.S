@@ -22,9 +22,8 @@
 .equ SIZE, 20				// MACRO size of User buff
 
 
-	.text				// Optional
-
-	.global _start
+.section .text				// Optional
+.global _start
 
 _start:
 	ldr r1, =message		// Loads address of label "message"

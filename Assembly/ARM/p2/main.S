@@ -1,7 +1,7 @@
 .equ SIZE, 20
 
-	.text
-	.global main
+.section .text
+.global main
 
 
 main:
@@ -23,7 +23,7 @@ main:
 
 
 
-	.data
+.section .data
 
 	.balign 4
 message:

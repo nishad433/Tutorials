@@ -1,7 +1,5 @@
-	.text
-
-
-	.global ncc_printf
+.section .text
+.global ncc_printf
 
 
 ncc_printf:
