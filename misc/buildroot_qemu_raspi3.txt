@@ -1,0 +1,11 @@
+buildroot config:
+BR2_PACKAGE_HOST_QEMU=y
+BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
+BR2_PACKAGE_HOST_QEMU_VIRTFS=y
+
+
+
+qemu image run:
+
+
+../host/bin/qemu-system-aarch64 -M raspi3b -no-reboot -nographic -append "coherent_pool=1M 8250.nr_uarts=1 snd_bcm2835.enable_compat_alsa=0 snd_bcm2835.enable_hdmi=1 bcm2708_fb.fbwidth=720 bcm2708_fb.fbheight=480 bcm2708_fb.fbswap=1 vc_mem.mem_base=0x3ec00000 vc_mem.mem_size=0x40000000  root=/dev/mmcblk0p2 rootwait console=tty1 console=ttyAMA0,115200" -sd sdcard.img -kernel Image -dtb bcm2710-rpi-3-b-plus.dtb -m 1G
