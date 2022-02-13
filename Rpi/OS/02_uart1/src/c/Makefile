@@ -5,7 +5,7 @@ CFLAGS += $(INCLUDES)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $^ -o $@ 
 
-all: gpio.o uart.o main.o 
+all: gpio.o uart.o printk.o main.o 
 
 .PHONY: clean
 clean:

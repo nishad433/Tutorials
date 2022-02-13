@@ -1,10 +1,11 @@
 #include"gpio.h"
 #include"uart.h"
+#include"printk.h"
 void main(void)
 {
     gpio_init();
     uart1_init();
-    uart_puts("Hello nishad\n");
+    printk("Hello nishad\n");
     while(1){
         ;
     }   

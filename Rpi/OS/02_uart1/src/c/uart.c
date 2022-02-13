@@ -37,6 +37,8 @@ void uart_send(unsigned int c){
 
 void uart_puts(char *s){
     while(*s){
+	if(*s=='\0')
+		break;
 	if(*s=='\n'){
 		uart_send('\r');
 	}

@@ -14,6 +14,7 @@ kernel = kernel8
 OBJS := $(TOP)/src/asm/boot.o \
 	$(TOP)/src/c/gpio.o   \
 	$(TOP)/src/c/uart.o   \
+	$(TOP)/src/c/printk.o   \
 	$(TOP)/src/c/main.o
 
 all: subdirs
