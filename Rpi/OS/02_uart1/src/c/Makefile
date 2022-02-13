@@ -1,15 +1,11 @@
-CROSS_COMPILER ?= aarch64-linux-gnu-
-CC = $(CROSS_COMPILER)gcc
-LD = $(CROSS_COMPILER)ld
-OBJCOPY = $(CROSS_COMPILER)objcopy
+INCLUDES = -I$(TOP)/include/
 
-CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
-LDFLAGS = -nostdlib -nostartfiles
+CFLAGS += $(INCLUDES)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $^ -o $@ 
 
-all: main.o
+all: gpio.o uart.o main.o 
 
 .PHONY: clean
 clean:

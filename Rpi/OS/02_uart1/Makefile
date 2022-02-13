@@ -1,18 +1,19 @@
 
 
-CROSS_COMPILER ?= aarch64-linux-gnu-
-CC = $(CROSS_COMPILER)gcc
-LD = $(CROSS_COMPILER)ld
-OBJCOPY = $(CROSS_COMPILER)objcopy
+export CROSS_COMPILER ?= aarch64-linux-gnu-
+export CC = $(CROSS_COMPILER)gcc
+export LD = $(CROSS_COMPILER)ld
+export OBJCOPY = $(CROSS_COMPILER)objcopy
 
-CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
-LDFLAGS = -nostdlib -nostartfiles
+export CFLAGS = -g -Wall -ffreestanding
+export LDFLAGS = -nostdlib -nostartfiles
+export TOP := $(shell pwd)
 
 kernel = kernel8
 
-TOP := $(shell pwd)
-
 OBJS := $(TOP)/src/asm/boot.o \
+	$(TOP)/src/c/gpio.o   \
+	$(TOP)/src/c/uart.o   \
 	$(TOP)/src/c/main.o
 
 all: subdirs
@@ -23,7 +24,7 @@ subdirs:
 	$(OBJCOPY) -O binary $(kernel).elf $(kernel).img
 
 run:
-	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -d in_asm
+	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial null -serial stdio
 
 .PHONY: clean
 clean:

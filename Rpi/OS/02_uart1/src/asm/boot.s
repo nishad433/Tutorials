@@ -5,7 +5,7 @@ _start:
     // read cpu id, stop slave cores
     mrs	    x1, mpidr_el1
     and	    x1,x1, #3
-    cbz	    x0, 2f
+    cbz	    x1, 2f
     // cpu_id > 0, do loop
 1:  wfe
     b	    1b
