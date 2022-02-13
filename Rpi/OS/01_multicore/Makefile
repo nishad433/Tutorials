@@ -19,13 +19,12 @@ OBJS := boot.o main.o
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 all: clean $(OBJS)
-	$(LD) $(LDFLAGS) $(OBJS) -T link.lds -o $(kernel).elf
+	$(LD) $(LDFLAGS) $(OBJS) -T link.ld -o $(kernel).elf
 	$(OBJCOPY) -O binary $(kernel).elf $(kernel).img
+
+run:
+	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -d in_asm
 
 .PHONY: clean
 clean:
 	rm -rf $(kernel).elf $(kernel).img *.o
-
-
-run:
-	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -d in_asm
