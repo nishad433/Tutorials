@@ -25,3 +25,7 @@ all: clean $(OBJS)
 .PHONY: clean
 clean:
 	rm -rf $(kernel).elf $(kernel).img *.o
+
+
+run:
+	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -d in_asm
