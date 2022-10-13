@@ -8,7 +8,7 @@ OBJCOPY:=${CROSS_COMPILE}objcopy
 
 LDFLAGS = -nostdlib -nostartfiles
 
-%.o:	%.s
+%.o:	%.S
 	${AS} -o $@ $<
 
 all: startup.o
