@@ -19,6 +19,14 @@ SECTIONS
 
         _text_end = ADDR(.text) + SIZEOF(.text);
 
+        .bss (NOLOAD) :
+        {
+                . = ALIGN(8);
+                _bss_start = ADDR(.bss);
+                *(.bss)
+                _bss_end = ADDR(.bss) + SIZEOF(.bss);
+        } > RAM
+
         .data : AT(_text_end)
         {
                 . = ALIGN(8);
@@ -27,13 +35,8 @@ SECTIONS
                 _data_end = ADDR(.data) + SIZEOF(.data);
         } > RAM
 
-        .bss (NOLOAD) :
-        {
-                . = ALIGN(8);
-                _bss_start = ADDR(.bss);
-                *(.bss)
-                _bss_end = ADDR(.bss) + SIZEOF(.bss);
-        } > RAM
+        _stack_start = ADDR(.data) + SIZEOF(.data);
+        _stack_end = _stack_start + 0x10000;
 
 /*  /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }  */
 

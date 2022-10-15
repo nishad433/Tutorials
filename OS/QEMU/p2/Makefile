@@ -17,7 +17,7 @@ else
 ifeq (${ARCH},arm64)
 CROSS_COMPILE:=aarch64-linux-gnu-
 LDSCRIPT:=link64.ld
-ASFLAGS:= -g
+ASFLAGS:= -g -march=armv8-a
 
 QEMU_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot -nographic -kernel ${TARGET}.bin -d in_asm
 QEMU_GDB_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot -nographic -kernel ${TARGET}.bin -S -gdb tcp::3333
@@ -36,6 +36,8 @@ OBJCOPY:=${CROSS_COMPILE}objcopy
 CFLAGS:= -g
 LDFLAGS:= -nostdlib -nostartfiles 
 #LDFLAGS = -nostdlib -nostartfiles -lgcc -L./lib/
+
+OBJS+=main.o
 
 build : ${OBJS}
 	${LD} ${LDFLAGS} -T ${LDSCRIPT} $^ -o ${TARGET}.elf

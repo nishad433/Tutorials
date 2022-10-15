@@ -14,6 +14,8 @@ _start:
 .section .text
 
 clear_bss :
+        ldr r0, =_bss_start
+        ldr r1, =_bss_end
         mov r3, #0x0
 1:      cmp r0, r1
         strlt r3,[r0], #4
@@ -21,6 +23,10 @@ clear_bss :
         bx lr
 
 Reset_Handler:
+      
+	/* Clear BSS Section */
+        bl clear_bss
+
         /* Copy Data section from ROM to RAM */
         ldr r0, =_text_end
         ldr r1, =_data_start
@@ -29,16 +35,16 @@ Reset_Handler:
         ldrlt r3, [r0], #4
         strlt r3, [r1], #4
         blt 1b
-        
-	/* Clear BSS Section */
-        ldr r0, =_bss_start
-        ldr r1, =_bss_end
-        bl clear_bss
 
+	/* Set Stack Memory */
+	ldr r0, =_stack_end
+	ldr sp, [r0]
 
 	/* Copy str1 to r2 */
 	ldr	r2, =str1
 	ldr	r2, [r2]
+
+	bl main
 
 	/* loop */
 	b	.

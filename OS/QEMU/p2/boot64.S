@@ -14,31 +14,37 @@ _start:
 .section .text
 
 clear_bss :
-        mov r3, #0x0
-1:      cmp r0, r1
-        strlt r3,[r0], #4
-        blt 1b
-        bx lr
+        ldr x0, =_bss_start
+        ldr x1, =_bss_end
+1:      str xzr,[x0], #8
+        cmp x0, x1
+        b.lo 1b
+        ret
 
 Reset_Handler:
-        /* Copy Data section from ROM to RAM */
-        ldr r0, =_text_end
-        ldr r1, =_data_start
-        ldr r2, =_data_end
-1:      cmp r1, r2
-        ldrlt r3, [r0], #4
-        strlt r3, [r1], #4
-        blt 1b
-        
+      
 	/* Clear BSS Section */
-        ldr r0, =_bss_start
-        ldr r1, =_bss_end
         bl clear_bss
 
+        /* Copy Data section from ROM to RAM */
+        ldr x0, =_text_end
+        ldr x1, =_data_start
+        ldr x2, =_data_end
+1:      cmp x1, x2
+        ldr x3, [x0], #8
+        str x3, [x1], #8
+        b.le 1b
 
-	/* Copy str1 to r2 */
-	ldr	r2, =str1
-	ldr	r2, [r2]
+        /* Set Stack Memory */
+        ldr x0, =_stack_end
+        ldr x1, [x0]
+        mov sp, x1
+
+	/* Copy str1 to x2 */
+	ldr	x2, =str1
+	ldr	x2, [x2]
+
+	bl main
 
 	/* loop */
 	b	.
