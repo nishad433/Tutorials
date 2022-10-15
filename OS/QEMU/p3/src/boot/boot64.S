@@ -22,14 +22,7 @@ clear_bss :
         ret
 
 Reset_Handler:
-	// read cpu id, stop slave cores
-	mrs     x1, mpidr_el1
-	and     x1,x1, #3
-	cbz     x1, 2f
-	// cpu_id > 0, do loop
-1:	wfe
-	b       1b
-2:	// cpu_id == 0 
+      
 	/* Clear BSS Section */
         bl clear_bss
 
@@ -37,19 +30,14 @@ Reset_Handler:
         ldr x0, =_text_end
         ldr x1, =_data_start
         ldr x2, =_data_end
-3:      cmp x1, x2
+1:      cmp x1, x2
         ldr x3, [x0], #8
         str x3, [x1], #8
-        b.le 3b
+        b.le 1b
 
         /* Set Stack Memory */
         ldr x0, =_stack_end
-        ldr x1, [x0]
-        mov sp, x1
-
-	/* Copy str1 to x2 */
-	ldr	x2, =str1
-	ldr	x2, [x2]
+	mov sp, x0
 
 	bl main
 
@@ -57,5 +45,3 @@ Reset_Handler:
 	b	.
 
 .section .data
-str1:
-	.word	0xDEADBEEF

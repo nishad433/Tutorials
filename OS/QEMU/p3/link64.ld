@@ -44,7 +44,7 @@ SECTIONS
                 _data_end = ADDR(.data) + SIZEOF(.data);
         } > RAM
 
-	_stack_start = ADDR(.data) + SIZEOF(.data);
+        _stack_start = ADDR(.data) + SIZEOF(.data);
         _stack_end = _stack_start + 0x10000;
 
 /*  /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }  */
