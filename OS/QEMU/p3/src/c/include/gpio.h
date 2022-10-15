@@ -6,7 +6,6 @@
 
 #ifdef GPIO_SUPPORT
 
-#define GPIO_BASE_ADDR  (IO_BASE_ADDR + 0x00200000)
 
 #define GPIO_NUM_MAX (54)
 
@@ -54,6 +53,8 @@ typedef struct {
 }gpio_regs_t;
 
 
+#define GPIO_BASE  (IO_BASE_ADDR + 0x00200000)
+#define GPIO_REGS   ((volatile gpio_regs_t *)GPIO_BASE)
 
 int gpio_init(void);
 void gpio_set_fn(int gpio, int fn);
