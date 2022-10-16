@@ -1,8 +1,8 @@
 ifeq (${ARCH},arm32)
-OBJS:=boot32.o
+OBJS := boot32.o
 else
 ifeq (${ARCH},arm64)
-OBJS:=boot64.o
+OBJS := boot64.o
 endif
 endif
 

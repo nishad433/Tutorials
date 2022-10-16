@@ -3,12 +3,15 @@ TOP:=${shell pwd}
 
 include ${TOP}/tags.mk
 
+PATH=$(shell printenv PATH):${TOOLCHAIN_BIN}
+export PATH
+
 ifeq (${ARCH},arm32)
-OBJS:=${BOOT_SRC}/boot32.o
+OBJS := ${BOOT_SRC}/boot32.o	
 else
 ifeq (${ARCH},arm64)
-OBJS:=${BOOT_SRC}/boot64.o
-OBJS+=${C_SRC}/gpio.o
+OBJS := ${BOOT_SRC}/boot64.o	\
+	${C_SRC}/gpio.o
 endif
 endif
 
@@ -19,7 +22,7 @@ OBJS += ${C_SRC}/main.o \
 
 build :
 	${MAKE} -C src 
-	${LD} ${LDFLAGS} -T ${LDSCRIPT} ${OBJS} -o ${TARGET}.elf
+	${LD} ${OBJS} -T ${LDSCRIPT} ${LDFLAGS} -o ${TARGET}.elf
 	${OBJCOPY} -O binary ${TARGET}.elf ${TARGET}.bin
 
 %.o : %.S
@@ -40,7 +43,7 @@ run :
 
 .PHONY: clean
 clean :
-	make -C src clean
+	${MAKE} -C src clean
 	rm -rf *.o ${TARGET}.elf ${TARGET}.bin
 
 
