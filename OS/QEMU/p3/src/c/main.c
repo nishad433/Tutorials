@@ -4,17 +4,19 @@
 #include<printk.h>
 
 int main(void){
+#if defined(UART0_SUPPORT) || defined(UART1_SUPPORT)
         uart_cfg_t uart_cfg={
                 .data_bits = 8,
                 .stop_bits = 1,
                 .parity = 0,
                 .baudrate = 9600
         };
+#endif
 	
-	gpio_init();	
-	uart1_init();
+	gpio_init();
+#if defined(UART0_SUPPORT) || defined(UART1_SUPPORT)
 	uart_configure(uart_cfg);
-
+#endif
 	printk("Hello World Nishad\n");
 
 	return 0;
