@@ -44,13 +44,19 @@ int uart_configure(uart_cfg_t cfg){
 		return UART_BAUDRATE_ERR;
 	}
 #if defined(UART0_SUPPORT)
-	int val;
+#if defined(RASPI3)
+	gpio_set_fn(14, 0);
+	gpio_set_fn(15, 0);
+#endif
+	int ibrd, frac, val;
 	write_clr( &UART0_REGS->cr, CR_UARTEN );
 	while( UART0_REGS->fr & FR_BUSY );
 	write_clr( &UART0_REGS->lcr_h, LCRH_FEN );
 
-	UART0_REGS->ibrd = 156;
-	UART0_REGS->fbrd = 63;
+	ibrd = UARTCLK/(16*cfg.baudrate);
+	frac = ((UARTCLK%(16*cfg.baudrate))*64/(16*cfg.baudrate)) + 0.5;
+	UART0_REGS->ibrd = ibrd;
+	UART0_REGS->fbrd = frac;
 
 	val = UART0_REGS->lcr_h;
 	val &= ~(7 << 5u | 0x7 << 1u);

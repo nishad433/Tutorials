@@ -5,6 +5,12 @@
 #include<stdint.h>
 
 
+#if defined(RASPI3)
+#define UARTCLK 250000000u   // 250MHz
+#elif defined(VEXP_A9)
+#define UARTCLK 24000000u    // 24MHz 
+#endif
+
 #if defined(UART0_SUPPORT) || defined(UART1_SUPPORT)
 
 typedef struct { 

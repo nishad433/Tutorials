@@ -9,7 +9,7 @@ int main(void){
                 .data_bits = 8,
                 .stop_bits = 1,
                 .parity = 0,
-                .baudrate = 9600
+                .baudrate = 115200
         };
 #endif
 	
