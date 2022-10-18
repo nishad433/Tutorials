@@ -61,7 +61,6 @@ typedef struct uart_cfg{
 }uart_cfg_t;
 
 #if defined(UART0_SUPPORT)
-#define UART0_BASE       0x10009000 
 
 #define UART0_REGS       ((volatile uart_regs_t *)UART0_BASE)
 
@@ -86,10 +85,8 @@ typedef struct {
     uint32_t aux_mu_baud;               // 0x68
 }aux_regs_t;
 
-#define AUX_BASE   (IO_BASE_ADDR + 0x00215000)
 #define AUX_REGS       ((volatile aux_regs_t *)AUX_BASE)
 
-#define UART1_BASE  IO_BASE_ADDR + 0x1000
 #define UART1_REGS       ((volatile uart_regs_t *)UART1_BASE)
 
 #endif //UART1_SUPPORT

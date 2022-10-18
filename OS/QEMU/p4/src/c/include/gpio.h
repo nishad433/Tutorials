@@ -15,6 +15,17 @@
 #define GPIO_TO_IDX(X) ((X<GPIO_NUM_MAX)?(X/32):0)
 #define GPIO_TO_SHIFT(X) ((X<GPIO_NUM_MAX)?(X%32):0)
 
+typedef enum {
+	gpio_fn_input  = 0x0,
+	gpio_fn_output = 0x1,
+	gpio_fn_altfn0 = 0x4,
+	gpio_fn_altfn1 = 0x5,
+	gpio_fn_altfn2 = 0x6,
+	gpio_fn_altfn3 = 0x7,
+	gpio_fn_altfn4 = 0x3,
+	gpio_fn_altfn5 = 0x2
+}gpio_fn_t;
+
 #define GPIO_INPUT 0x0
 #define GPIO_OUTPUT 0x1
 #define GPIO_ALT_FN0 0x4
@@ -53,11 +64,10 @@ typedef struct {
 }gpio_regs_t;
 
 
-#define GPIO_BASE  (IO_BASE_ADDR + 0x00200000)
 #define GPIO_REGS   ((volatile gpio_regs_t *)GPIO_BASE)
 
 int gpio_init(void);
-void gpio_set_fn(int gpio, int fn);
+void gpio_set_fn(int gpio, gpio_fn_t fn);
 void gpio_direction_output(int gpio);
 void gpio_direction_input(int gpio);
 int gpio_get_value(int gpio);

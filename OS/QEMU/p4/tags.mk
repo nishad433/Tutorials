@@ -51,8 +51,8 @@ CC:=${CROSS_COMPILE}gcc
 LD:=${CROSS_COMPILE}ld
 OBJCOPY:=${CROSS_COMPILE}objcopy
 
-ASFLAGS:= -g3
-CFLAGS:= -g3 -Wall ${DEFINES} -nostdlib -nostartfiles
+ASFLAGS:= -O0 -ggdb3
+CFLAGS:= -O0 -ggdb3 -Wall ${DEFINES} -nostdlib -nostartfiles
 
 
 C_SRC=${TOP}/src/c/

@@ -53,7 +53,6 @@ typedef struct {
 	uint32_t tag_buff[31];
 }__attribute__((aligned(16),packed)) mbox_msg_t;
 
-#define MAILBOX_BASE	(IO_BASE_ADDR + 0xB880)
 #define MAILBOX_REGS ((volatile mbox_regs_t *)MAILBOX_BASE)
 
 int mbox_call(int channel, mbox_msg_t *msg);
