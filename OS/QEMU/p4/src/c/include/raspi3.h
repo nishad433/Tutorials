@@ -4,7 +4,9 @@
 #define GPIO_SUPPORT
 #define UART0_SUPPORT
 #define UART1_SUPPORT
+#if !defined(CONSOLE_UART0) &&  !defined(CONSOLE_UART1)
 #define CONSOLE_UART0
+#endif
 #define MAILBOX_SUPPORT
 
 #define IO_BASE_ADDR 0x3F000000

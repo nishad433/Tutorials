@@ -13,8 +13,10 @@ int main(void){
                 .baudrate = 115200
         };
 #endif
-	
+
+#if defined(GPIO_SUPPORT)	
 	gpio_init();
+#endif
 #if defined(UART0_SUPPORT) || defined(UART1_SUPPORT)
 	uart_configure(uart_cfg);
 #endif

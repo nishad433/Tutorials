@@ -3,10 +3,16 @@
 
 #include<platform.h>
 #include<stdint.h>
-
+#if defined(GPIO_SUPPORT)
+#include<gpio.h>
+#endif
 
 #if defined(RASPI3)
 #define UARTCLK 3000000u   // 3MHz
+#if defined(GPIO_SUPPORT)
+#define UART_TXD GPIO_14
+#define UART_RXD GPIO_15
+#endif
 #elif defined(VEXP_A9)
 #define UARTCLK 24000000u    // 24MHz 
 #endif

@@ -15,6 +15,9 @@
 #define GPIO_TO_IDX(X) ((X<GPIO_NUM_MAX)?(X/32):0)
 #define GPIO_TO_SHIFT(X) ((X<GPIO_NUM_MAX)?(X%32):0)
 
+#define GPIO_14	14
+#define GPIO_15	14
+
 typedef enum {
 	gpio_fn_input  = 0x0,
 	gpio_fn_output = 0x1,
@@ -25,16 +28,6 @@ typedef enum {
 	gpio_fn_altfn4 = 0x3,
 	gpio_fn_altfn5 = 0x2
 }gpio_fn_t;
-
-#define GPIO_INPUT 0x0
-#define GPIO_OUTPUT 0x1
-#define GPIO_ALT_FN0 0x4
-#define GPIO_ALT_FN1 0x5
-#define GPIO_ALT_FN2 0x6
-#define GPIO_ALT_FN3 0x7
-#define GPIO_ALT_FN4 0x3
-#define GPIO_ALT_FN5 0x2
-
 
 typedef struct {
     uint32_t gpfsel[6];
@@ -72,15 +65,6 @@ void gpio_direction_output(int gpio);
 void gpio_direction_input(int gpio);
 int gpio_get_value(int gpio);
 void gpio_set_value(int gpio, int val);
-
-#else
-
-static inline int gpio_init(void){ return 0; }
-static inline void gpio_set_fn(int gpio, int fn){ }
-static inline void gpio_direction_output(int gpio){ }
-static inline void gpio_direction_input(int gpio){ }
-static inline int gpio_get_value(int gpio){ return 0; }
-static inline void gpio_set_value(int gpio, int val){ }
 
 #endif //GPIO_SUPPORT
 

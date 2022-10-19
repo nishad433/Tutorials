@@ -17,8 +17,8 @@ ARCH=arm64
 DEFINES:=-DRASPI3
 
 #QEMU_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot -nographic -kernel ${TARGET}.bin -d in_asm
-QEMU_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot -serial null -serial stdio -kernel ${TARGET}.bin 
-QEMU_GDB_CMD:=qemu-system-aarch64 -M raspi3 -m 1000M -no-reboot -serial null -serial stdio -kernel ${TARGET}.bin -S -gdb tcp::3333
+QEMU_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot -serial stdio -serial null -kernel ${TARGET}.bin 
+QEMU_GDB_CMD:=qemu-system-aarch64 -M raspi3 -m 1000M -no-reboot -serial stdio -serial null -kernel ${TARGET}.bin -S -gdb tcp::3333
 endif
 endif
 
@@ -52,7 +52,7 @@ LD:=${CROSS_COMPILE}ld
 OBJCOPY:=${CROSS_COMPILE}objcopy
 
 ASFLAGS:= -O0 -ggdb3
-CFLAGS:= -O0 -ggdb3 -Wall ${DEFINES} -nostdlib -nostartfiles
+CFLAGS= -O0 -ggdb3 -Wall ${DEFINES} ${FLAGS} -nostdlib -nostartfiles
 
 
 C_SRC=${TOP}/src/c/

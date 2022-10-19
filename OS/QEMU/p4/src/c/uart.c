@@ -44,11 +44,9 @@ int uart_configure(uart_cfg_t cfg){
 		return UART_BAUDRATE_ERR;
 	}
 #if defined(UART0_SUPPORT)
-#if defined(RASPI3)
-#if defined(CONSOLE_UART0)
-	gpio_set_fn(14, gpio_fn_altfn0);
-	gpio_set_fn(15, gpio_fn_altfn0);
-#endif
+#if defined(GPIO_SUPPORT) && defined(RASPI3) && defined(CONSOLE_UART0)
+	gpio_set_fn(UART_TXD, gpio_fn_altfn0);
+	gpio_set_fn(UART_RXD, gpio_fn_altfn0);
 #endif
 	int ibrd, frac, val;
 	write_clr( &UART0_REGS->cr, CR_UARTEN );
@@ -79,9 +77,9 @@ int uart_configure(uart_cfg_t cfg){
 	AUX_REGS->aux_mu_iir = 0x6;
 	AUX_REGS->aux_mu_lcr = 0x3;
 	AUX_REGS->aux_mu_baud = 270;
-#if defined(CONSOLE_UART0)
-	gpio_set_fn(14, gpio_fn_altfn5);
-	gpio_set_fn(15, gpio_fn_altfn5);
+#if defined(GPIO_SUPPORT) && defined(RASPI3) && defined(CONSOLE_UART1)
+	gpio_set_fn(UART_TXD, gpio_fn_altfn5);
+	gpio_set_fn(UART_RXD, gpio_fn_altfn5);
 #endif
 	AUX_REGS->aux_mu_cntl = 0x3;
 #endif
