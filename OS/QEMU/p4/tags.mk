@@ -15,10 +15,14 @@ else
 ifeq (${M},raspi3)
 ARCH=arm64
 DEFINES:=-DRASPI3
-
-#QEMU_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot -nographic -kernel ${TARGET}.bin -d in_asm
-QEMU_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot -serial stdio -serial null -kernel ${TARGET}.bin 
-QEMU_GDB_CMD:=qemu-system-aarch64 -M raspi3 -m 1000M -no-reboot -serial stdio -serial null -kernel ${TARGET}.bin -S -gdb tcp::3333
+ifeq (${CONSOLE},UART1)
+SERIAL_CONSOLE:=-serial null -serial stdio
+else
+CONSOLE:=UART0
+SERIAL_CONSOLE:=-serial stdio -serial null
+endif
+QEMU_CMD:=qemu-system-aarch64 -M raspi3 -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin 
+QEMU_GDB_CMD:=qemu-system-aarch64 -M raspi3 -m 1000M -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin -S -gdb tcp::3333
 endif
 endif
 
@@ -52,7 +56,7 @@ LD:=${CROSS_COMPILE}ld
 OBJCOPY:=${CROSS_COMPILE}objcopy
 
 ASFLAGS:= -O0 -ggdb3
-CFLAGS= -O0 -ggdb3 -Wall ${DEFINES} ${FLAGS} -nostdlib -nostartfiles
+CFLAGS= -O0 -ggdb3 -Wall ${DEFINES} -DCONSOLE_${CONSOLE} -nostdlib -nostartfiles
 
 
 C_SRC=${TOP}/src/c/
