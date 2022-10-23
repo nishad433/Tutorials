@@ -1,6 +1,8 @@
 #ifndef _RASPI3_H_
 #define _RASPI3_H_
 
+#include<asm_utils.h>
+
 #define GPIO_SUPPORT
 #define UART0_SUPPORT
 #define UART1_SUPPORT

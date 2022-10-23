@@ -21,7 +21,6 @@ int main(void){
 #if defined(UART0_SUPPORT) || defined(UART1_SUPPORT)
 	uart_configure(uart_cfg);
 #endif
-	printk("Hello World Nishad\n");
 
 #if defined(MAILBOX_SUPPORT)
 	mbox_msg_t msg;
@@ -41,7 +40,11 @@ int main(void){
 #endif
 #if defined(RNG_SUPPORT)
 	rng_init();
-	printk("Rand %d\n",rand(0,30));
+#endif
+#if defined(RASPI3)
+	printk("RPi3 Booting EL:%d Clock Rate:%d MHz\n",get_current_EL(),msg.tag_buff[1]/(1000*1000));
+#elif defined(VEXP_A9)
+	printk("VEXP-A9 Booting\n");
 #endif
 	return 0;
 }

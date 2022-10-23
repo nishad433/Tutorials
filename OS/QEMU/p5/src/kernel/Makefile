@@ -1,14 +1,6 @@
-C_FILES := ${wildcard *.c}
-OBJS := ${C_FILES:%.c=%.o}
-DEPS := ${C_FILES:%.c=%.d}
+SUBDIRS:=${wildcard */}
 
-%.o : %.c
-	${CC} ${CFLAGS} -c $< -o $@
-
-build: ${OBJS}
-
-.PHONY: clean
+build :
+	@for d in ${SUBDIRS}; do [ -d $$d ] && ${MAKE} ${MAKE_FLAGS} -C $$d; done
 clean:
-	rm -rf ${OBJS} ${DEPS}
-
--include $(DEPS)
+	@for d in ${SUBDIRS}; do [ -d $$d ] && ${MAKE} ${MAKE_FLAGS} -C $$d clean; done

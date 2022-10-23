@@ -27,13 +27,13 @@ SERIAL_CONSOLE:=-serial stdio -serial null
 endif
 
 ifeq (${MACHINE},raspi3)
-DEFINES:=-DRASPI3
+DEFINES:=-DRASPI3 -DARM64 -DAARCH64
 QEMU_CMD:=qemu-system-aarch64 -M ${MACHINE} -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin 
 QEMU_GDB_CMD:=qemu-system-aarch64 -M ${MACHINE} -m 1000M -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin -S -gdb tcp::3333
 endif
 
 ifeq (${MACHINE},vexpress-a9)
-DEFINES:=-DVEXP_A9
+DEFINES:=-DVEXP_A9 -DARM32 -DARM
 QEMU_GDB_CMD:=qemu-system-arm -M ${MACHINE} -m 512M -no-reboot -nographic -kernel ${TARGET}.bin -S -gdb tcp::3333
 QEMU_CMD:=qemu-system-arm -M ${MACHINE} -m 512M -no-reboot -nographic -kernel ${TARGET}.bin
 endif
