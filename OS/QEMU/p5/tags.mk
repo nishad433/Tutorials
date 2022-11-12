@@ -9,13 +9,13 @@ endif
 ifeq (${ARCH},arm64)
 TARGET:=kernel8
 MACHINE:=raspi3
-TOOLCHAIN:=gcc-arm-11.2-2022.02-x86_64-aarch64-none-elf
+TOOLCHAIN:=aarch64-none-elf
 CROSS_COMPILE:=aarch64-none-elf-
 endif
 ifeq (${ARCH},arm32)
 TARGET:=kernel
 MACHINE:=vexpress-a9
-TOOLCHAIN:=arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi
+TOOLCHAIN:=arm-none-eabi
 CROSS_COMPILE:=arm-none-eabi-
 endif
 
@@ -52,14 +52,14 @@ LD:=${CROSS_COMPILE}ld
 OBJCOPY:=${CROSS_COMPILE}objcopy
 
 ifeq (${ARCH},arm64)
-ASFLAGS:= -O0 -ggdb3 -march=armv8-a
+ASFLAGS:= -O0 -ggdb3 -g3 -march=armv8-a ${DEFINES} ${INCLUDES}
 endif
 
 ifeq (${ARCH},arm32)
-ASFLAGS:= -O0 -ggdb3 -march=armv7-a
+ASFLAGS:= -O0 -ggdb3 -g3 -march=armv7-a ${DEFINES} ${INCLUDES}
 endif
 
-CFLAGS= -O0 -ggdb3 -Wall -MMD ${DEFINES} ${INCLUDES} -nostdlib -nostartfiles
+CFLAGS= -O0 -ggdb3 -g3 -Wall -MMD ${DEFINES} ${INCLUDES} -nostdlib -nostartfiles
 
 ifeq (${ARCH},arm64)
 LDFLAGS:= -L${TOOLCHAIN_PATH}/aarch64-none-elf/lib/ -lc 

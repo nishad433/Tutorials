@@ -12,7 +12,6 @@ SECTIONS
 {
         .text :
         {
-		KEEP(*(.vector_table))
                 *(.text)
 		_text_end = .;
         } > ROM
