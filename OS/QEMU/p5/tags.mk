@@ -28,8 +28,11 @@ endif
 
 ifeq (${MACHINE},raspi3)
 DEFINES:=-DRASPI3 -DARM64 -DAARCH64
-QEMU_CMD:=qemu-system-aarch64 -M ${MACHINE} -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin 
-QEMU_GDB_CMD:=qemu-system-aarch64 -M ${MACHINE} -m 1000M -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin -S -gdb tcp::3333
+#mkfifo /tmp/guest.in /tmp/guest.out
+#QEMU_CMD:=qemu-system-aarch64 -M ${MACHINE} -smp 4 -m 1024M  -no-reboot -nographic -serial pipe:/tmp/guest.out -kernel ${TARGET}.bin 
+QEMU_CMD:=qemu-system-aarch64 -M ${MACHINE} -smp 4 -m 1024M  -no-reboot -nographic -kernel ${TARGET}.bin 
+#QEMU_CMD:=qemu-system-aarch64 -M ${MACHINE} -smp 4 -m 1024M -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin 
+QEMU_GDB_CMD:=qemu-system-aarch64 -M ${MACHINE} -smp 4 -m 1024M -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin -S -gdb tcp::3333
 endif
 
 ifeq (${MACHINE},vexpress-a9)
