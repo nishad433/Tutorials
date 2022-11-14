@@ -9,13 +9,13 @@ endif
 ifeq (${ARCH},arm64)
 TARGET:=kernel8
 MACHINE:=raspi3
-TOOLCHAIN:=aarch64-none-elf
+TOOLCHAIN:=aarch64
 CROSS_COMPILE:=aarch64-none-elf-
 endif
 ifeq (${ARCH},arm32)
 TARGET:=kernel
 MACHINE:=vexpress-a9
-TOOLCHAIN:=arm-none-eabi
+TOOLCHAIN:=arm
 CROSS_COMPILE:=arm-none-eabi-
 endif
 

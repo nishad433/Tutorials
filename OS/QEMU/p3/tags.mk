@@ -1,4 +1,4 @@
-M?=vexpress-a9
+M?=raspi3
 
 TARGET:=kernel
 
@@ -24,7 +24,7 @@ endif
 
 
 ifeq (${ARCH},arm32)
-TOOLCHAIN_PATH:=${TOOLCHAIN_ROOT}/arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi/
+TOOLCHAIN_PATH:=${TOOLCHAIN_ROOT}/arm/
 TOOLCHAIN_LIB:=${TOOLCHAIN_PATH}/
 CROSS_COMPILE:=arm-none-eabi-
 LDSCRIPT:=link32.ld
@@ -34,7 +34,7 @@ LDFLAGS+= -L${TOOLCHAIN_PATH}/lib/gcc/arm-none-eabi/12.2.0/ -lgcc
 LDFLAGS+= -L${TOOLCHAIN_PATH}/arm-none-eabi/lib/ -lm
 else
 ifeq (${ARCH},arm64)
-TOOLCHAIN_PATH:=${TOOLCHAIN_ROOT}/gcc-arm-11.2-2022.02-x86_64-aarch64-none-elf/
+TOOLCHAIN_PATH:=${TOOLCHAIN_ROOT}/aarch64/
 CROSS_COMPILE:=aarch64-none-elf-
 LDSCRIPT:=link64.ld
 ASFLAGS+= -march=armv8-a

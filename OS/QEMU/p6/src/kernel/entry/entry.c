@@ -7,6 +7,9 @@
 #if defined(IRQ_SUPPORT)
 #include<irq.h>
 #endif
+#if defined(ARM_TIMER_SUPPORT)
+#include<arm_timer.h>
+#endif
 #if defined(BCM_TIMER_SUPPORT)
 #include<bcm_timer.h>
 #endif

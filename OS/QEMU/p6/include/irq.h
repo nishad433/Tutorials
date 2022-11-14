@@ -47,6 +47,9 @@ typedef struct {
 
 void irq_init(void);
 void do_irq(void);
-void timer_irq_pending();
+void irq_vectors_init(void);
+void enable_irq(void);
+void disable_irq(void);
+void timer_irq_pending(void);
 
 #endif

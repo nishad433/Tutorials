@@ -11,7 +11,7 @@ int mbox_read(int channel){
 }
 
 
-int mbox_write(int channel, int32_t data){
+int mbox_write(int channel, uint64_t data){
 	unsigned int r = (((unsigned int)((unsigned long)data)&~0xF) | (channel&0xF));
 
 	/* wait until we can write to the mailbox */
@@ -26,7 +26,7 @@ int mbox_call(int channel, mbox_msg_t *msg){
 
 	int data;
 	unsigned int r = (((unsigned int)((unsigned long)msg)&~0xf) |  (channel & 0xf));
-	mbox_write( channel, (int32_t)msg);
+	mbox_write( channel, (uint64_t)msg);
 
 	while(1){
 		data = mbox_read(channel);
