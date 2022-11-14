@@ -2,7 +2,6 @@
 #include<irq.h>
 #include<arm_timer.h>
 
-static uint32_t cntfrq = 0;
 
 // Enable virtual timer
 void enable_cntv(void){
@@ -50,7 +49,8 @@ static inline void io_halt(void)
 }
 
 void timer_irq_pending(void){
-	uint32_t val, cntvct;
+	uint32_t val, cntvct, cntfrq;
+	cntfrq = read_cntfrq();
 	if(IRQ_CORE_REGS->irq_src_core0 & (1<< CNTVIRQ_SRC_BIT)){
 		val = read_cntv_tval();
 		cntvct = read_cntvct();
@@ -60,7 +60,7 @@ void timer_irq_pending(void){
 }
 
 void arm_timer_init(void){
-	uint32_t val, cntvct;
+	uint32_t val, cntvct, cntfrq;
 	cntfrq = read_cntfrq();
 	write_cntv_tval(cntfrq);
 	val = read_cntv_tval();
