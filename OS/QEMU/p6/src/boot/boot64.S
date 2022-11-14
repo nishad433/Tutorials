@@ -1,6 +1,6 @@
 #include<arm/macro.h>
 
-.section .text
+.section .text.boot
 .global _start
 _start:
 	mrs	x0, mpidr_el1
@@ -40,7 +40,6 @@ el1_entry:
 	
 	bl	main
 
-	/* loop */
-	b	.
+	bl	halt
 
 .section .data
