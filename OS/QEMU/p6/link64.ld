@@ -25,26 +25,24 @@ SECTIONS
         .rodata : {
                 *(.rodata)
                 *(.rodata.str1.4)
-                _rodata = . ;  /* symbol for initialization data */
+                _rodata_end = . ;  /* symbol for initialization data */
         } > ROM
 
         .bss (NOLOAD) :
         {
-                . = ALIGN(8);
                 _bss_start = ADDR(.bss);
                 *(.bss)
                 _bss_end = ADDR(.bss) + SIZEOF(.bss);
         } > RAM
 
-        .data : AT(_rodata)
+        .data : AT(_rodata_end)
         {
-                . = ALIGN(8);
-                _data_start = ADDR(.data);
                 *(.data)
-                _data_end = ADDR(.data) + SIZEOF(.data);
+                . = ALIGN(16);
         } > RAM
-
-        _stack_start = ADDR(.data) + SIZEOF(.data);
+        _data_start = ADDR(.data);
+        _data_end = ADDR(.data) + SIZEOF(.data);
+        _stack_start = _data_end;
         _stack_end = _stack_start + 0x10000;
 
 /*  /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }  */

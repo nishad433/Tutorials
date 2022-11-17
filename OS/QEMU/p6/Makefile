@@ -20,9 +20,11 @@ run :
 	${QEMU_CMD}
 
 objdump :
-	${OBJDUMP} -d ${TARGET}.elf > ${TARGET}.dump
+	${OBJDUMP} -d ${TARGET}.elf > ${TARGET}.text.dump
+	${OBJDUMP} -D ${TARGET}.elf > ${TARGET}.all.dump
+	${OBJDUMP} -t ${TARGET}.elf > ${TARGET}.syms.dump
 
 .PHONY: clean
 clean :
 	${MAKE} ${MAKE_FLAGS} -C src clean
-	rm -rf ${TARGET}.elf ${TARGET}.bin ${TARGET}.dump
+	rm -rf ${TARGET}.elf ${TARGET}.bin ${TARGET}.*.dump

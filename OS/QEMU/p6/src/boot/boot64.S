@@ -20,17 +20,17 @@ el1_entry:
  	/* Clear BSS Section */
         ldr	x0, =_bss_start
         ldr	x1, =_bss_end
-1:      str	xzr,[x0], #8
+1:      strb	wzr,[x0], #1
         cmp	x0, x1
         b.lo	1b
 
         /* Copy Data section from ROM to RAM */
-        ldr	x0, =_text_end
+        ldr	x0, =_rodata_end
         ldr	x1, =_data_start
         ldr	x2, =_data_end
 1:      cmp	x1, x2
-        ldr	x3, [x0], #8
-        str	x3, [x1], #8
+        ldrb	w3, [x0], #1
+        strb	w3, [x1], #1
         b.le	1b
 
 
