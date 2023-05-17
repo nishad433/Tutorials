@@ -4,7 +4,7 @@ PWD=$(shell pwd)
 
 obj-m := ncc.o
 
-ncc-objs := main.o 
+ncc-objs := main.o
 
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules

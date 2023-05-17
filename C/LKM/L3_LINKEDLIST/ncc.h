@@ -2,8 +2,11 @@
 
 #define _NCC_H_
 
+#include<linux/list.h>
+
 typedef struct {
-    int a;
+	struct list_head ncc_list;
+	int a;
 }ncc_t;
 
 #endif

@@ -4,7 +4,6 @@
 #include <linux/fs.h>
 #include "ncc.h"
 
-
 static int major;
 static struct class *ncc_char_class=NULL;
 static struct device *ncc_char_device=NULL;

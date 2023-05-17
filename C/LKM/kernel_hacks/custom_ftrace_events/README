@@ -1,0 +1,11 @@
+in C file add this
+
+#define CREATE_TRACE_POINTS
+#include <trace/events/ncc.h>
+
+
+
+and to trace
+
+
+trace_ncc_open(arg1,arg2);
