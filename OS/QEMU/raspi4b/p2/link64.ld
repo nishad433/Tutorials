@@ -5,7 +5,7 @@ ENTRY(_start)
 MEMORY
 {
         ROM (rx) : ORIGIN = 0x80000, LENGTH = 10M
-        RAM (rwx) : ORIGIN = 0xA80000, LENGTH = 1024M
+        RAM (rwx) : ORIGIN = 0x0, LENGTH = 2048M
 }
 
 
@@ -19,5 +19,24 @@ SECTIONS
                 _text_end = .;
         } > ROM
 
+        .bss (NOLOAD) :
+        {
+                _bss_start = ADDR(.bss);
+                *(.bss)
+                _bss_end = ADDR(.bss) + SIZEOF(.bss);
+        } > RAM
+
+        .data : AT(_text_end)
+        {
+                *(.data)
+                . = ALIGN(16);
+        } > RAM
+
+        _data_start = ADDR(.data);
+        _data_end = ADDR(.data) + SIZEOF(.data);
+
+        /* stack to start from end of RAM upto size 0x80000 bytes */
+        _stack_start = ORIGIN(RAM) + LENGTH(RAM);
+        _stack_end = _stack_start - 0x10000;
 }
 

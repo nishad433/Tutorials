@@ -7,6 +7,7 @@ help :
 	@echo "make clean       : clean the repo"
 	@echo "make run-gdb     : run the kernel in qemu with debugging enabled"
 	@echo "make run         : run the kernel in qemu"
+	@echo "make objdump     : build objdumps"
 
 all : build objs
 	${LD} ${objs} -T ${LDSCRIPT} ${LDFLAGS} -o ${TARGET}.elf
