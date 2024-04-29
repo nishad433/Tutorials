@@ -30,7 +30,8 @@
             "command": "make",
             "args": [
                 "run-gdb"
-            ]
+            ],
+            "problemMatcher": []
         }
     ]
 }

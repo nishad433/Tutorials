@@ -18,4 +18,11 @@ primary:
 
         /* in EL1 */
 el1_entry:
-        b .
+        // setup stack
+        ldr x0, =_stack_start
+        mov sp, x0
+        // setup bss and move data sections.
+        bl setup_c_environment
+        // Call main routine
+        bl main
+
