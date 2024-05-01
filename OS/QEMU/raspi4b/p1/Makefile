@@ -1,5 +1,4 @@
-#TOP:=$(shell pwd)
-TOP:=.
+TOP:=$(shell pwd)
 
 include ${TOP}/tags.mk
 
@@ -8,6 +7,7 @@ help :
 	@echo "make clean       : clean the repo"
 	@echo "make run-gdb     : run the kernel in qemu with debugging enabled"
 	@echo "make run         : run the kernel in qemu"
+	@echo "make objdump     : build objdumps"
 
 all : build objs
 	${LD} ${objs} -T ${LDSCRIPT} ${LDFLAGS} -o ${TARGET}.elf
@@ -15,7 +15,7 @@ all : build objs
 
 # finds all .o in src/*/ and src/*/*/
 objs :
-	${eval objs:= $(shell find ${TOP} -name *.o)}
+	${eval objs:= $(shell realpath --relative-to ${TOP} `find ${TOP} -name *.o`)}
 
 build :
 	${MAKE} ${MAKE_FLAGS} -C src

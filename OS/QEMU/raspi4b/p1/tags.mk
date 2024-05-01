@@ -8,6 +8,8 @@ endif
 TOOLCHAIN_ROOT:=/home/nishad/Documents/toolchain/arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf
 TOOLCHAIN_PATH:=${TOOLCHAIN_ROOT}
 TOOLCHAIN_BIN:=${TOOLCHAIN_PATH}/bin
+TOOLCHAIN_VER:=13.2.1
+TOOLCHAIN_INCLUDE:=${TOOLCHAIN_PATH}/lib/gcc/aarch64-none-elf/${TOOLCHAIN_VER}/include/
 PATH=$(shell printenv PATH):${TOOLCHAIN_BIN}
 CROSS_COMPILE:=aarch64-none-elf-
 AS:=${CROSS_COMPILE}as
@@ -18,6 +20,7 @@ OBJDUMP:=${CROSS_COMPILE}objdump
 
 DEFINES:=
 INCLUDES:=-I${TOP}/include/
+INCLUDES+=-I${TOOLCHAIN_INCLUDE}
 ASFLAGS:= -O0 -ggdb3 -g3 -march=armv8-a ${DEFINES} ${INCLUDES}
 CFLAGS= -O0 -ggdb3 -g3 -Wall -MMD ${DEFINES} ${INCLUDES} -nostdlib -nostartfiles
 LDFLAGS:=
