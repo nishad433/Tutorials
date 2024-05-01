@@ -4,7 +4,7 @@ ENTRY(_start)
 
 MEMORY
 {
-        ROM (rx) : ORIGIN = 0x80000, LENGTH = 10M
+        ROM (rx) : ORIGIN = 0x80000, LENGTH = 1M
         RAM (rwx) : ORIGIN = 0x0, LENGTH = 2048M
 }
 
@@ -35,8 +35,7 @@ SECTIONS
         _data_start = ADDR(.data);
         _data_end = ADDR(.data) + SIZEOF(.data);
 
-        /* stack to start from end of RAM upto size 0x80000 bytes */
-        _stack_start = ORIGIN(RAM) + LENGTH(RAM);
-        _stack_end = _stack_start - 0x10000;
+        /* stack to start from start of kernel code text and go downwards */
+        _stack_start = ORIGIN(ROM);
 }
 
