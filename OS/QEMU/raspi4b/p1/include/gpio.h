@@ -18,9 +18,9 @@ typedef enum {
 } gpio_func_t;
 
 typedef enum {
-  gpio_no_resistor = 0,  // No resistor selected
-  gpio_pull_high = 1, // Pull up resistor selected
-  gpio_pull_low = 2, // Pull down resistor selected
+  gpio_no_resistor = 0, // No resistor selected
+  gpio_pull_high = 1,   // Pull up resistor selected
+  gpio_pull_low = 2,    // Pull down resistor selected
 } gpio_pud_pdn_resistor_t;
 
 typedef struct {

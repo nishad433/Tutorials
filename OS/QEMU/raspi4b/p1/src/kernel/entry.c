@@ -1,6 +1,6 @@
 #include <gpio.h>
-#include <uart.h>
 #include <printk.h>
+#include <uart.h>
 
 // First routine after C environment is setup
 int main(void) {
