@@ -1,1 +1,10 @@
-load the kernel and spin in main()
+* Load the kernel.
+* Switch to el1.
+* Hang the secondary cores.
+* Setup the stack.
+* Call the first C routine.
+* Clear bss and copy data section.
+* Do gpio init.
+* Do uart init.
+* Print "Hello World"
+* Keep spinning.
