@@ -22,3 +22,7 @@ P1/
     * Do uart init.
     * Print "Hello World"
     * Keep spinning.
+
+P2/
+    * setup irqs
+    * setup arm timer irq
