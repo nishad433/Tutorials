@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "raspi4_types.h": "c"
+    }
+}

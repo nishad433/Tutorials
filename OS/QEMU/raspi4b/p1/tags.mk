@@ -30,9 +30,15 @@ LDSCRIPT:=link64.ld
 TARGET:=kernel8
 MACHINE:=raspi4b
 
+#UART1
+#SERIAL_CONSOLE:=-serial stdio -serial null
+# MINI_UART
+SERIAL_CONSOLE:=-serial null -serial stdio
+
 QEMU_PATH:=/home/nishad/Documents/qemu/build
 QEMU_SYSTEM:=${QEMU_PATH}/qemu-system-aarch64
-QEMU_CMD:=${QEMU_SYSTEM} -M ${MACHINE} -smp 4 -m 2048M  -no-reboot -nographic -kernel ${TARGET}.bin -d in_asm
+#QEMU_CMD:=${QEMU_SYSTEM} -M ${MACHINE} -smp 4 -m 2048M  -no-reboot -nographic -kernel ${TARGET}.bin -d in_asm
+QEMU_CMD:=${QEMU_SYSTEM} -M ${MACHINE} -smp 4 -m 2048M  -no-reboot  ${SERIAL_CONSOLE} -kernel ${TARGET}.bin 
 QEMU_GDB_CMD:=${QEMU_SYSTEM} -M ${MACHINE} -smp 4 -m 2048M -no-reboot ${SERIAL_CONSOLE} -kernel ${TARGET}.bin -S -gdb tcp::3333
 
 

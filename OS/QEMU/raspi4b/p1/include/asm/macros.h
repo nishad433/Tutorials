@@ -1,7 +1,7 @@
 #ifndef _MACROS_H_
 #define _MACROS_H_
 
-#include<asm/sysregs.h>
+#include <asm/sysregs.h>
 
 /*
  * Branch according to exception level
