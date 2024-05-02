@@ -11,9 +11,14 @@ Setting up toolchains:
 echo | gcc -E -xc -include 'stddef.h' - | grep size_t
 
 P1/
-    linker script to build kernel
-    drop to el on master core
-    clear bss section
-    copy data section to memory
-    setup c stack
-    call first c routine
+    * linker script to build kernel
+    * Load the kernel.
+    * Switch to el1.
+    * Hang the secondary cores.
+    * Setup the stack.
+    * Call the first C routine.
+    * Clear bss and copy data section.
+    * Do gpio init.
+    * Do uart init.
+    * Print "Hello World"
+    * Keep spinning.
