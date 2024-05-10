@@ -19,6 +19,17 @@ SECTIONS
                 _text_end = .;
         } > ROM
 
+        .eh_frame :
+        {
+                *(.eh_frame)
+        } > ROM
+
+        .rodata : {
+                *(.rodata)
+                *(.rodata.str1.4)
+                _rodata_end = . ;  /* symbol for initialization data */
+        } > ROM
+
         .bss (NOLOAD) :
         {
                 _bss_start = ADDR(.bss);
@@ -26,7 +37,7 @@ SECTIONS
                 _bss_end = ADDR(.bss) + SIZEOF(.bss);
         } > RAM
 
-        .data : AT(_text_end)
+        .data : AT(_rodata_end)
         {
                 *(.data)
                 . = ALIGN(16);

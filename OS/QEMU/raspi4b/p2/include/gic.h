@@ -1,9 +1,8 @@
-#include <stdint.h>
-#include <stdio.h>
+#ifndef _GIC_H_
+#define _GIC_H_
 
-typedef uint32_t rw_REG32;
-typedef const uint32_t ro_REG32;
-
+#include<base.h>
+#include<raspi4_types.h>
 
 typedef struct{
     rw_REG32 GICD_CTLR;                         // 0x000 Distributor Control Register
@@ -26,7 +25,7 @@ typedef struct{
     uint32_t reserved7[0x11];
     rw_REG32 GICD_IPRIORITYRn[128];             // 0x400-0x5FC Interrupt Priority Registers
     uint32_t reserved8[0x80];
-    ro_REG32 GICD_ITARGETSRn[128];              // 0x800-0x81C Interrupt Processor Targets Registers
+    rw_REG32 GICD_ITARGETSRn[128];              // 0x800-0x81C Interrupt Processor Targets Registers
     uint32_t reserved9[0x80];
     rw_REG32 GICD_ICFGRn[32];                   // 0xC00-0xC7C Interrupt Configuration Registers
     uint32_t reserved10[0x20];
@@ -52,8 +51,6 @@ typedef struct{
     rw_REG32 GICD_CIDR3;                        // 0xFFC Component ID 3 Register
 }gic_dist_regs_t;
 
-
-
 typedef struct{
     rw_REG32 GICC_CTLR;         // 0x0000 CPU Interface Control Register
     rw_REG32 GICC_PMR;          // 0x0004 Interrupt Priority Mask Register
@@ -76,94 +73,35 @@ typedef struct{
     rw_REG32 GICC_DIR;          // 0x1000 Deactivate Interrupt Register
 }gic_cpu_intf_regs_t;
 
-
-
 typedef struct{
     uint32_t reserved[0x400];
-    gic_dist_regs_t distributor;
-    gic_cpu_intf_regs_t cpu_intf[4];
-    uint32_t test;
+    gic_dist_regs_t distributor;        // 0x1000-0x1FFF
+    gic_cpu_intf_regs_t cpu_intf;       // 0x2000-0x3FFF
 }gic400_regs_t;
 
+#define NUM_CPUS        4
+#define NUM_SPIs        192
+#define NUM_PPIs        32
+#define NUM_IRQs        (NUM_PPIs + NUM_SPIs) 
 
-//#define disp(x)  printf("%-30s 0x%02lx\n",#x,(uint64_t)(&((regs_t *)0)->x));
-#define disp(x) printf("0x%02lx\t%s\n", (uint64_t)(&((gic400_regs_t *)0)->x), #x);
-#define disp1(x) printf("0x%03lx\t%s\n", (uint64_t)(&((gic_dist_regs_t *)0)->x), #x);
-#define disp2(x) printf("0x%03lx\t%s\n", (uint64_t)(&((gic_cpu_intf_regs_t *)0)->x), #x);
+/* 8.9.7 GICD_ICFGR<n>, Interrupt Configuration Registers */
+#define GIC_GICD_ICFGR_LEVEL    (0x0)   /* level-sensitive */
+#define GIC_GICD_ICFGR_EDGE             (0x2)   /* edge-triggered */
 
+/* 8.13.11 GICC_IAR, CPU Interface Interrupt Acknowledge Register */
+#define GICC_IAR_INTR_IDMASK            (0x3ff) /* 0-9 bits means Interrupt ID */
+#define GICC_IAR_SPURIOUS_INTR          (0x3ff) /* 1023 means spurious interrupt */
 
-int main() {
+#define GIC_BASE    0xff840000                  // low peripheral mode
+//#define GIC_BASE    0x4c0040000               // high peripheral mode
+#define GIC_DIST_BASE           (GIC_BASE + 0x1000)
+#define GIC_CPU_INTF_BASE       (GIC_BASE + 0x2000)
 
-    int index=0;
-  //  disp(distributor);
+#define GIC_DIST_REGS           ((volatile gic_dist_regs_t *)GIC_DIST_BASE)
+#define GIC_CPU_INTF_REGS       ((volatile gic_cpu_intf_regs_t *)GIC_CPU_INTF_BASE)
 
-	disp1(GICD_CTLR);
-	disp1(GICD_TYPER);
-	disp1(GICD_IIDR);
-	disp1(GICD_IGROUPRn[0]);
-	disp1(GICD_IGROUPRn[14]);
-	disp1(GICD_ISENABLERn[0]);
-	disp1(GICD_ISENABLERn[1]);
-	disp1(GICD_ISENABLERn[14]);
-	disp1(GICD_ICENABLERn[0]);
-	disp1(GICD_ICENABLERn[1]);
-	disp1(GICD_ICENABLERn[14]);
-	disp1(GICD_ISPENDRn[0]);
-	disp1(GICD_ISPENDRn[14]);
-	disp1(GICD_ICPENDRn[0]);
-	disp1(GICD_ICPENDRn[14]);
-	disp1(GICD_ISACTIVERn[0]);
-	disp1(GICD_ISACTIVERn[14]);
-	disp1(GICD_ICACTIVERn[0]);
-	disp1(GICD_ICACTIVERn[14]);
-	disp1(GICD_IPRIORITYRn[0]);
-	disp1(GICD_IPRIORITYRn[127]);
-	disp1(GICD_ITARGETSRn[0]);
-	disp1(GICD_ITARGETSRn[7]);
-	disp1(GICD_ITARGETSRn[8]);
-	disp1(GICD_ITARGETSRn[127]);
-	disp1(GICD_ICFGRn[0]);
-	disp1(GICD_ICFGRn[1]);
-	disp1(GICD_ICFGRn[31]);
-	disp1(GICD_PPISR);
-	disp1(GICD_SPISRn[0]);
-	disp1(GICD_SPISRn[14]);
-	disp1(GICD_SGIR);
-	disp1(GICD_CPENDSGIRn[0]);
-	disp1(GICD_CPENDSGIRn[2]);
-	disp1(GICD_SPENDSGIRn[0]);
-	disp1(GICD_SPENDSGIRn[2]);
-	disp1(GICD_PIDR4);
-	disp1(GICD_PIDR5);
-	disp1(GICD_PIDR6);
-	disp1(GICD_PIDR7);
-	disp1(GICD_PIDR0);
-	disp1(GICD_PIDR1);
-	disp1(GICD_PIDR2);
-	disp1(GICD_PIDR3);
-	disp1(GICD_CIDR0);
-	disp1(GICD_CIDR1);
-	disp1(GICD_CIDR2);
-	disp1(GICD_CIDR3);
+#define GIC_NS_PHYS_TIMER_IRQ   30
 
-    disp(cpu_intf);
-    disp2(GICC_CTLR);
-    disp2(GICC_PMR);
-    disp2(GICC_BPR);
-    disp2(GICC_IAR);
-    disp2(GICC_EOIR);
-    disp2(GICC_RPR);
-    disp2(GICC_HPPIR);
-    disp2(GICC_ABPR);
-    disp2(GICC_AIAR);
-    disp2(GICC_AEOIR);
-    disp2(GICC_AHPPIR);
-    disp2(GICC_APR0);
-    disp2(GICC_NSAPR0);
-    disp2(GICC_IIDR);
-    disp2(GICC_DIR);
-    disp(test);
-
-
-  return 0;
-}
+void gic_init(void);
+void gic_enable_irq(int, int);
+#endif // _IRQ_H_
