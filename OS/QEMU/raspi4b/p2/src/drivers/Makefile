@@ -1,6 +1,12 @@
-subdirs:=${wildcard */}
+SUBDIRS:=aux_periph generic_timer gpio uart
 
-build :
-	@for d in ${subdirs}; do [ -d $$d ] && ${MAKE} -C $$d; done
-clean:
-	@for d in ${subdirs}; do [ -d $$d ] && ${MAKE} -C $$d clean; done
+
+build : ${SUBDIRS}
+
+${SUBDIRS} :
+	${MAKE} -C $@ build
+
+clean :
+	@for d in ${SUBDIRS}; do [ -d $$d ] && ${MAKE} -C $$d clean; done
+
+.PHONY: build clean ${SUBDIRS}

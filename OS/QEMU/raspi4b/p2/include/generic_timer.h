@@ -3,9 +3,8 @@
 
 #include<raspi4_types.h>
 
-#define SYS_FREQ 54000000
-
 uint64_t get_sys_count(void);
+uint64_t get_sys_frequency(void);
 void set_CNTP_TVAL(uint32_t);
 void setup_CNTP_CTL(void);
 void generic_timer_init(void);

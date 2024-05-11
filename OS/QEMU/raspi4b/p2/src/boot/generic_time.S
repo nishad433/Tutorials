@@ -16,3 +16,7 @@ setup_CNTP_CTL:
     msr CNTP_CTL_EL0, x9
     ret
 
+.globl get_sys_frequency
+get_sys_frequency:
+    mrs x0, CNTFRQ_EL0
+    ret

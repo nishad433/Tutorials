@@ -7,7 +7,6 @@ _start:
         switch_primary x0, primary, secondary
 
 .section .text
-.global getCurrEL
 secondary:
         b proc_hang
 primary:
@@ -33,6 +32,7 @@ proc_hang:
     wfe
     b proc_hang
 
+.global getCurrEL
 getCurrEL:
     mrs x0, CurrentEL;
     lsr x0, x0, #2

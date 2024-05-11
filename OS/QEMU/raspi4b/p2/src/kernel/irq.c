@@ -1,5 +1,6 @@
 #include<printk.h>
 #include<irq.h>
+#include<generic_timer.h>
 
 void irq_controller_init(){
         gic_init();

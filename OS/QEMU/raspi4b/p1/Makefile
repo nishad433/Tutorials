@@ -18,7 +18,7 @@ objs :
 	${eval objs:= $(shell realpath --relative-to ${TOP} `find ${TOP} -name *.o`)}
 
 build :
-	${MAKE} ${MAKE_FLAGS} -C src
+	${MAKE} ${MAKE_FLAGS} -C src build
 
 run-gdb :
 	${QEMU_GDB_CMD}
@@ -34,4 +34,4 @@ objdump :
 .PHONY: clean
 clean :
 	${MAKE} ${MAKE_FLAGS} -C src clean
-	rm -rf ${TARGET}.elf ${TARGET}.bin ${TARGET}.*.dump
+	rm -rf ${TARGET}.elf ${TARGET}.bin ${TARGET}.*.dump cscope.*
