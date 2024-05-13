@@ -76,6 +76,7 @@ int printk(char *fmt, ...) {
         }
         break;
       case 'x':
+      case 'p':
         c = hex2str(va_arg(ap, unsigned int), b);
         for (j = 0; j < c - 1; j++) {
           buffer[++count] = b[j];

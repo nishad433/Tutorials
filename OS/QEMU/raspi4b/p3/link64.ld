@@ -46,6 +46,10 @@ SECTIONS
         _data_start = ADDR(.data);
         _data_end = ADDR(.data) + SIZEOF(.data);
 
+        . = ALIGN(0x1000);
+        id_pg_dir = .;
+        .data.id_pg_dir : { . += (20 * (1 << 12)); }      /* 20 4K pages */
+
         /* stack to start from start of kernel code text and go downwards */
         _stack_start = ORIGIN(ROM);
 }

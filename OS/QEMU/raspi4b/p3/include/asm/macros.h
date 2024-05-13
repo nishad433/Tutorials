@@ -2,20 +2,19 @@
 #define _MACROS_H_
 
 #include <asm/sysregs.h>
+#include <asm/asmdefs.h>
+
 
 /*
  * Branch according to exception level
  */
 .macro  switch_el, xreg, el3_label, el2_label, el1_label
         mrs     \xreg, CurrentEL
-        cmp     \xreg, 0xc
-        b.eq    \el3_label
-        cmp     \xreg, 0x8
+        cmp     \xreg, #0x8
+        b.gt    \el3_label
         b.eq    \el2_label
-        cmp     \xreg, 0x4
-        b.eq    \el1_label
+        b.lt    \el1_label
 .endm
-
 
 /*
  * Switch from EL3 to EL1 for ARMv8

@@ -1,14 +1,11 @@
 #include<asm/macros.h>
 
 .section .text.boot
-.global _start
 
-_start:
+ENTRY(_start)
         switch_primary x0, primary, secondary
-
-.section .text
 secondary:
-        b proc_hang
+        b hang
 primary:
         switch_el       x0, 3f, 2f, el1_entry
 3:      /* in EL3 */
@@ -26,15 +23,17 @@ el1_entry:
         bl setup_c_environment
         // Call main routine
         bl main
+ENDPROC(_start)
 
-proc_hang:
+ENTRY(hang)
     /* wait for event */
     wfe
-    b proc_hang
+    b hang
+ENDPROC(hang)
 
-.global getCurrEL
-getCurrEL:
+ENTRY(current_el)
     mrs x0, CurrentEL;
     lsr x0, x0, #2
     and x0, x0, #3
     ret;
+ENDPROC(current_el)

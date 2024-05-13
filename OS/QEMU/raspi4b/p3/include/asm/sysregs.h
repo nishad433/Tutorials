@@ -8,6 +8,17 @@
 // https://developer.arm.com/documentation/ddi0500/j/System-Control/AArch64-register-descriptions/System-Control-Register--EL1
 // ***************************************
 
+/*
+ * SCTLR_EL1/SCTLR_EL2/SCTLR_EL3 bits definitions
+ */
+#define CR_M            (1 << 0)        /* MMU enable                   */
+#define CR_A            (1 << 1)        /* Alignment abort enable       */
+#define CR_C            (1 << 2)        /* Dcache enable                */
+#define CR_SA           (1 << 3)        /* Stack Alignment Check Enable */
+#define CR_I            (1 << 12)       /* Icache enable                */
+#define CR_WXN          (1 << 19)       /* Write Permision Imply XN     */
+#define CR_EE           (1 << 25)       /* Exception (Big) Endian       */
+
 #define SCTLR_RESERVED (3 << 28) | (3 << 22) | (1 << 20) | (1 << 11)
 #define SCTLR_EE_LITTLE_ENDIAN (0 << 25) // Exception endianness
 #define SCTLR_EOE_LITTLE_ENDIAN                                                \

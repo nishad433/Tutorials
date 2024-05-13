@@ -4,15 +4,16 @@
 #include <uart.h>
 #include <irq.h>
 #include <generic_timer.h>
+#include <mm.h>
 
 // First routine after C environment is setup
 int main(void) {
   gpio_init();
   uart_init();
-  printk("Starting\nEL=%d\n",getCurrEL());
+  printk("Starting\nEL=%d\n",current_el());
+  mm_init();
   irq_init();
   generic_timer_init();
-  while (1) {
-  }
+  hang();
   return 0;
 }

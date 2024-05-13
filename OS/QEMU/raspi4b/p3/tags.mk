@@ -21,7 +21,7 @@ OBJDUMP:=${CROSS_COMPILE}objdump
 DEFINES:=
 INCLUDES:=-I${TOP}/include/
 INCLUDES+=-I${TOOLCHAIN_INCLUDE}
-ASFLAGS:= -O0 -ggdb3 -g3 -march=armv8-a -mgeneral-regs-only ${DEFINES} ${INCLUDES}
+ASFLAGS:= -O0 -ggdb3 -g3 -march=armv8-a -mgeneral-regs-only -D__ASSEMBLY__ ${DEFINES} ${INCLUDES}
 CFLAGS= -O0 -ggdb3 -g3 -Wall -MMD -mgeneral-regs-only ${DEFINES} ${INCLUDES} -nostdlib -nostartfiles
 LDFLAGS:=
 LDSCRIPT:=link64.ld

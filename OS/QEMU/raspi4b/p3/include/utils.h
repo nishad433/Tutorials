@@ -3,8 +3,8 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <asm/utils.h>
 
-int getCurrEL(void);
 void *memset(void *, int, size_t);
 void *memcpy(void *, const void *, size_t);
 
