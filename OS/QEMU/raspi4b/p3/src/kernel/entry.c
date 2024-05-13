@@ -11,9 +11,9 @@ int main(void) {
   gpio_init();
   uart_init();
   printk("Starting\nEL=%d\n",current_el());
-  mm_init();
   irq_init();
   generic_timer_init();
+  mm_init();
   hang();
   return 0;
 }
