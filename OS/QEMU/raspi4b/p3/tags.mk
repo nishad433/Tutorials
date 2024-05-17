@@ -4,6 +4,9 @@ else
 MAKE_FLAGS:=--no-print-directory
 endif
 
+OBJLISTF=.obj_list.txt
+OBJLISTFILE:=${TOP}/${OBJLISTF}
+
 # TOOLCHAIN related
 TOOLCHAIN_ROOT:=/home/nishad/Documents/toolchain/arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-elf
 TOOLCHAIN_PATH:=${TOOLCHAIN_ROOT}
@@ -45,4 +48,4 @@ QEMU_GDB_CMD:=${QEMU_SYSTEM} -M ${MACHINE} -smp 4 -m 2048M -no-reboot ${SERIAL_C
 
 export PATH
 export AS CC LD OBJCOPY OBJDUMP
-export ASFLAGS CFLAGS LDFLAGS MAKE_FLAGS
+export ASFLAGS CFLAGS LDFLAGS MAKE_FLAGS TOP OBJLISTFILE

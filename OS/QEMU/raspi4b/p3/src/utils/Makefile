@@ -5,10 +5,12 @@ deps := ${c_files:%.c=%.d}
 build: ${objs}
 
 %.o : %.c
-	$(CC) ${CFLAGS} -c $< -o $@
+	@echo "Compiling $(subst $(TOP)/,,$(CURDIR)/)$<"
+	@echo "$(subst $(TOP)/,,$(CURDIR)/)$@" >> ${OBJLISTFILE}
+	@$(CC) ${CFLAGS} -c $< -o $@
 
 .PHONY : clean
 clean :
-	rm -rf ${objs} ${deps}
+	rm -rf {$(subst $(TOP)/,,$(CURDIR)/)} ${objs} ${deps}
 
 -include ${deps}

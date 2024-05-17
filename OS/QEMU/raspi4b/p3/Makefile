@@ -10,15 +10,16 @@ help :
 	@echo "make objdump     : build objdumps"
 
 all : build objs
-	${LD} ${objs} -T ${LDSCRIPT} ${LDFLAGS} -o ${TARGET}.elf
+	${LD} ${objslist} -T ${LDSCRIPT} ${LDFLAGS} -o ${TARGET}.elf
 	${OBJCOPY} -O binary ${TARGET}.elf ${TARGET}.bin
 
 # finds all .o in src/*/ and src/*/*/
 objs :
-	${eval objs:= $(shell realpath --relative-to ${TOP} `find ${TOP} -name *.o`)}
+	${eval objslist:= $(shell cat ${OBJLISTFILE} | xargs)}
 
 build :
-	${MAKE} ${MAKE_FLAGS} -C src build
+	rm -rf ${OBJLISTFILE}
+	@${MAKE} ${MAKE_FLAGS} -C src build
 
 run-gdb :
 	${QEMU_GDB_CMD}
@@ -33,5 +34,5 @@ objdump :
 
 .PHONY: clean
 clean :
-	${MAKE} ${MAKE_FLAGS} -C src clean
-	rm -rf ${TARGET}.elf ${TARGET}.bin ${TARGET}.*.dump cscope.*
+	@${MAKE} ${MAKE_FLAGS} -C src clean
+	rm -rf ${OBJLISTF} ${TARGET}.elf ${TARGET}.bin ${TARGET}.*.dump cscope.*
