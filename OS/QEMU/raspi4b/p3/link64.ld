@@ -30,6 +30,23 @@ SECTIONS
                 _rodata_end = . ;  /* symbol for initialization data */
         } > ROM
 
+        ksyms = .;
+        symbols : {
+            *(_symbols)
+        } > ROM
+
+        _code_end = . ;
+
+        .data : AT(_code_end)
+        {
+                *(.data)
+                . = ALIGN(16);
+        } > RAM
+
+        _data_start = ADDR(.data);
+
+        _data_end = ADDR(.data) + SIZEOF(.data);
+
         .bss (NOLOAD) :
         {
                 _bss_start = ADDR(.bss);
@@ -37,20 +54,15 @@ SECTIONS
                 _bss_end = ADDR(.bss) + SIZEOF(.bss);
         } > RAM
 
-        .data : AT(_rodata_end)
-        {
-                *(.data)
-                . = ALIGN(16);
-        } > RAM
-
-        _data_start = ADDR(.data);
-        _data_end = ADDR(.data) + SIZEOF(.data);
-
         . = ALIGN(0x1000);
         id_pg_dir = .;
         .data.id_pg_dir : { . += (20 * (1 << 12)); }      /* 20 4K pages */
 
         /* stack to start from start of kernel code text and go downwards */
         _stack_start = ORIGIN(ROM);
+
+        . = ALIGN(0x8);
+
+
 }
 

@@ -5,6 +5,7 @@
 #include <irq.h>
 #include <generic_timer.h>
 #include <mm.h>
+#include <debug.h>
 
 // First routine after C environment is setup
 int main(void) {
@@ -14,6 +15,7 @@ int main(void) {
   irq_init();
   generic_timer_init();
   mm_init();
+  debug_init();
   hang();
   return 0;
 }

@@ -82,7 +82,7 @@ typedef struct{
 #define NUM_CPUS        4
 #define NUM_SPIs        192
 #define NUM_PPIs        32
-#define NUM_IRQs        (NUM_PPIs + NUM_SPIs) 
+#define NUM_IRQs        (NUM_PPIs + NUM_SPIs)
 
 /* 8.9.7 GICD_ICFGR<n>, Interrupt Configuration Registers */
 #define GIC_GICD_ICFGR_LEVEL    (0x0)   /* level-sensitive */
@@ -92,8 +92,7 @@ typedef struct{
 #define GICC_IAR_INTR_IDMASK            (0x3ff) /* 0-9 bits means Interrupt ID */
 #define GICC_IAR_SPURIOUS_INTR          (0x3ff) /* 1023 means spurious interrupt */
 
-#define GIC_BASE    0xff840000                  // low peripheral mode
-//#define GIC_BASE    0x4c0040000               // high peripheral mode
+#define GIC_BASE                ARM_LOCAL_PERIPH_BASE_VA + 0x40000
 #define GIC_DIST_BASE           (GIC_BASE + 0x1000)
 #define GIC_CPU_INTF_BASE       (GIC_BASE + 0x2000)
 

@@ -48,7 +48,7 @@ typedef struct {
   rw_REG32 AUX_SPI2_TXHOLD_REGd; // [0xfc] SPI 2 Extended Data
 } aux_regs_t;
 
-#define AUX_BASE (PERIPH_BASE + 0x215000)
+#define AUX_BASE (MAIN_PERIPH_BASE_VA + 0x2215000)
 
 #define AUX_REGS ((volatile aux_regs_t *)AUX_BASE)
 

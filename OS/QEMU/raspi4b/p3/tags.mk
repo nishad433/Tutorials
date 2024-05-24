@@ -1,7 +1,7 @@
 ifeq (${DEBUG},1)
 MAKE_FLAGS:=-w
 else
-MAKE_FLAGS:=--no-print-directory
+MAKE_FLAGS:=-s --no-print-directory
 endif
 
 OBJLISTF=.obj_list.txt
@@ -18,6 +18,7 @@ CROSS_COMPILE:=aarch64-none-elf-
 AS:=${CROSS_COMPILE}as
 CC:=${CROSS_COMPILE}gcc
 LD:=${CROSS_COMPILE}ld
+NM:=${CROSS_COMPILE}nm
 OBJCOPY:=${CROSS_COMPILE}objcopy
 OBJDUMP:=${CROSS_COMPILE}objdump
 

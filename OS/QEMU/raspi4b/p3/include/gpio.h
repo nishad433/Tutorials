@@ -50,7 +50,7 @@ typedef struct {
       GPIO_PUP_PDN_CNTRL_REG[4]; // [0xe4] GPIO Pull-up / Pull-down Register 0-3
 } gpio_regs_t;
 
-#define GPIO_BASE (PERIPH_BASE + 0x200000)
+#define GPIO_BASE (MAIN_PERIPH_BASE_VA + 0x2200000)
 // GPIO Register
 #define GPIO_REGS ((volatile gpio_regs_t *)GPIO_BASE)
 

@@ -1,6 +1,6 @@
 #include <utils.h>
 
-extern uint64_t _rodata_end, _bss_start, _bss_end, _data_start, _data_end;
+extern uint64_t _code_end, _bss_start, _bss_end, _data_start, _data_end;
 
 void clear_bss() {
   memset((void *)&_bss_start, 0,
@@ -8,7 +8,7 @@ void clear_bss() {
 }
 
 void copy_data_section() {
-  memcpy((void *)&_data_start, (void *)&_rodata_end,
+  memcpy((void *)&_data_start, (void *)&_code_end,
          (int)((char *)&_data_end - (char *)&_data_start));
 }
 

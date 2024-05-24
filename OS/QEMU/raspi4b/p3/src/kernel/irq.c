@@ -1,6 +1,9 @@
 #include<printk.h>
 #include<irq.h>
 #include<generic_timer.h>
+#include<asm/exception.h>
+
+void dump_regs(void);
 
 void irq_controller_init(){
         gic_init();
@@ -32,5 +35,26 @@ void do_irq(void){
 }
 
 void show_msg(int type, unsigned long esr, unsigned long elr){
-        printk("%d ESR: 0x%x, Addr: 0x%x\n",type, esr,elr);
+
+    switch(type){
+        case SYNC_INVALID_EL1t:
+        case SYNC_INVALID_EL1h:
+        case SYNC_INVALID_EL0_64:
+        case SYNC_INVALID_EL0_32:
+            printk("[oops]\nSynchronourous Exception\nESR: 0x%x, Addr: 0x%x\n", esr,elr);
+            dump_regs();
+            printk("\n\n");
+            break;
+
+        case ERROR_INVALID_EL1t:
+        case ERROR_INVALID_EL1h:
+        case ERROR_INVALID_EL0_64:
+        case ERROR_INVALID_EL0_32:
+            printk("System Error (SError) ESR: 0x%x, Addr: 0x%x\n", esr,elr);
+            break;
+
+        default:
+            printk("%s ESR: 0x%x, Addr: 0x%x\n",type, esr,elr);
+            break;
+    }
 }

@@ -1,8 +1,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-extern uint64_t _text_end, _bss_start, _bss_end, _data_start, _data_end;
-
 void *memset(void *ptr, int c, size_t n) {
   for (int i = 0; i < n; i++) {
     ((char *)ptr)[i] = c;
