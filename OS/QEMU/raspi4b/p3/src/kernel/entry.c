@@ -9,12 +9,12 @@
 
 // First routine after C environment is setup
 int main(void) {
+  mm_init();
   gpio_init();
   uart_init();
   printk("Starting\nEL=%d\n",current_el());
   irq_init();
   generic_timer_init();
-  mm_init();
   debug_init();
   hang();
   return 0;

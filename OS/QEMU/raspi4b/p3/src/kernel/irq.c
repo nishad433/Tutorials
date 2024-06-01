@@ -2,6 +2,7 @@
 #include<irq.h>
 #include<generic_timer.h>
 #include<asm/exception.h>
+#include<asm/utils.h>
 
 void dump_regs(void);
 
@@ -44,6 +45,7 @@ void show_msg(int type, unsigned long esr, unsigned long elr){
             printk("[oops]\nSynchronourous Exception\nESR: 0x%x, Addr: 0x%x\n", esr,elr);
             dump_regs();
             printk("\n\n");
+            hang();
             break;
 
         case ERROR_INVALID_EL1t:

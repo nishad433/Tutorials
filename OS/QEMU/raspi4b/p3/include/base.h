@@ -24,8 +24,8 @@
 
 /* Virutal Address Macros*/
 
-#define MAIN_PERIPH_BASE_VA             MAIN_PERIPH_BASE_PA
-#define ARM_LOCAL_PERIPH_BASE_VA        ARM_LOCAL_PERIPH_BASE_PA
-#define DDR_START_VA                    DDR_START_PA
+#define MAIN_PERIPH_BASE_VA             (MAIN_PERIPH_BASE_PA)
+#define ARM_LOCAL_PERIPH_BASE_VA        (ARM_LOCAL_PERIPH_BASE_PA)
+#define DDR_START_VA                    (DDR_START_PA)
 
 #endif // _BASE_H_
