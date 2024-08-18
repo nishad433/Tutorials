@@ -1,0 +1,11 @@
+To cross compile
+
+
+env CGO_ENABLED=1 GOOS=linux GOARCH=arm CC=arm-buildroot-linux-uclibcgnueabi-gcc CGO_LDFLAGS="-L/home/nishad/mistsys/master/apfw/output/jade/host/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/lib -lpcap" go build -o ncc
+
+
+
+CGO_ENABLED=1  , if you need CGO
+GOARCH=arm64 or arm
+CC=  compiler name, and add the path into $PATH
+LDFLAGS, CFLAGS, if you want to link any C library(which is compiled for target arch)
