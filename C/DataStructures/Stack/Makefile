@@ -1,20 +1,27 @@
-export CC:=gcc
-export LD:=ld
-
-BINARY:=ncc
 PWD:=$(shell pwd)
-LIB_DIR:=$(PWD)/lib_ll
-LIB_INC:=$(LIB_DIR)/inc/
-CFLAGS=-Wall
-LDFLAGS=-L$(LIB_DIR) -Wl,-rpath,$(LIB_DIR)
+CC := gcc
 
-all : main.o
-	make -C $(LIB_DIR) libstack
-	$(CC) $(LDFLAGS) main.o -o $(BINARY) -lstack 
+TARGET_EXE := test
+EXE_SRCS := main.c
+EXE_OBJS := $(EXE_SRCS:.c=.o)
+LIBNAME := stack_ll
+TARGET_LIB := lib$(LIBNAME).so
 
-%.o : %.c
-	$(CC) $(CFLAGS) -I$(LIB_INC) -c $^ -o $@
+CFLAGS := -Wall -I$(PWD)/inc
+LDFLAGS := -L$(PWD)/lib -l$(LIBNAME) -Wl,-rpath,$(PWD)/lib
 
-clean :
-	make -C $(LIB_DIR) clean
-	rm -rf *.o $(BINARY) $(LIB_OBJS) libstack.so
+all: $(TARGET_LIB) $(TARGET_EXE)
+
+$(TARGET_LIB):
+	$(MAKE) -C lib $@ CFLAGS="$(CFLAGS)"
+
+$(TARGET_EXE): $(EXE_OBJS)
+	$(CC) -o $@ $(EXE_OBJS) $(LDFLAGS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	$(MAKE) -C lib $@
+	rm -rf *.o
+	rm -rf $(TARGET_EXE)
