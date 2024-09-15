@@ -1,0 +1,188 @@
+id(var_name)            # prints the address
+type(var_name)          # prints the var type
+
+Built-in Data Types:
+
+Text Type:      str
+Numeric Types:  int, float, complex
+Sequence Types: list, tuple, range
+Mapping Type:   dict
+Set Types:      set, frozenset
+Boolean Type:   bool
+Binary Types:   bytes, bytearray, memoryview
+None Type:      NoneType
+
+Tuples are immutable, lists are mutable
+
+Setting the Data Type
+Example                                        Data Type
+x = "Hello World"                               str
+x = 20                                          int
+x = 20.5                                        float
+x = 1j                                          complex
+x = ["apple", "banana", "cherry"]               list
+x = ("apple", "banana", "cherry")               tuple
+x = range(6)                                    range
+x = {"name" : "John", "age" : 36}               dict
+x = {"apple", "banana", "cherry"}               set
+x = frozenset({"apple", "banana", "cherry"})    frozenset
+x = True                                        bool
+x = b"Hello"                                    bytes
+x = bytearray(5)                                bytearray
+x = memoryview(bytes(5))                        memoryview
+x = None                                        NoneType
+
+
+Setting the Specific Data Type
+Example                                        Data Type
+x = str("Hello World")                          str
+x = int(20)                                     int
+x = float(20.5)                                 float
+x = complex(1j)                                 complex
+x = list(("apple", "banana", "cherry"))         list
+x = tuple(("apple", "banana", "cherry"))        tuple
+x = range(6)                                    range
+x = dict(name="John", age=36)                   dict
+x = set(("apple", "banana", "cherry"))          set
+x = frozenset(("apple", "banana", "cherry"))    frozenset
+x = bool(5)                                     bool
+x = bytes(5)                                    bytes
+x = bytearray(5)                                bytearray
+x = memoryview(bytes(5))                        memoryview
+
+
+Typecasting
+a = int(10.5) #converts a float object to int
+a = int(2*3.14) #expression results float, is converted to int
+a = int(True)     The int() function also returns integer 1 if a Boolean object is given as argument.
+a = int("100") # converts string to int
+a = int("110011", 2) # Binary string to Int
+a = int("20", 8) # Octal string to int
+a = int("2A9", 16) # Hex string to int
+a = str(10)  # int to string
+
+
+<<< a=[1,2,3,4,5]   # List Object
+<<< b=(1,2,3,4,5)   # Tupple Object
+<<< c="Hello"       # String Object
+
+### list() separates each character in the string and builds the list
+<<< obj=list(c)
+<<< obj
+['H', 'e', 'l', 'l', 'o']
+
+### The parentheses of tuple are replaced by square brackets
+<<< obj=list(b)
+<<< obj
+[1, 2, 3, 4, 5]
+
+### tuple() separates each character from string and builds a tuple of characters
+<<< obj=tuple(c)
+<<< obj
+('H', 'e', 'l', 'l', 'o')
+
+### square brackets of list are replaced by parentheses.
+<<< obj=tuple(a)
+<<< obj
+(1, 2, 3, 4, 5)
+
+### str() function puts the list and tuple inside the quote symbols.
+<<< obj=str(a)
+<<< obj
+'[1, 2, 3, 4, 5]'
+
+<<< obj=str(b)
+<<< obj
+'(1, 2, 3, 4, 5)'
+
+Python int() function
+Converts x to an integer. base specifies the base if x is a string.
+
+Python long() function
+Converts x to a long integer. base specifies the base if x is a string.
+
+Python float() function
+Converts x to a floating-point number.
+
+Python complex() function
+Creates a complex number.
+
+Python str() function
+Converts object x to a string representation.
+
+Python repr() function
+Converts object x to an expression string.
+
+Python eval() function
+Evaluates a string and returns an object.
+
+Python tuple() function
+Converts s to a tuple.
+
+Python list() function
+Converts s to a list.
+
+Python set() function
+Converts s to a set.
+
+Python dict() function
+Creates a dictionary. d must be a sequence of (key,value) tuples.
+
+Python frozenset() function
+Converts s to a frozen set.
+
+Python chr() function
+Converts an integer to a character.
+
+Python unichr() function
+Converts an integer to a Unicode character.
+
+Python ord() function
+Converts a single character to its integer value.
+
+Python hex() function
+Converts an integer to a hexadecimal string.
+
+Python oct() function
+Converts an integer to an octal string.
+
+
+Unicode:
+var = "\u0031\u0030"
+print (var)     # 10
+
+string = "Hello"
+tobytes = string.encode('utf-8')
+print (tobytes)                         # b'Hello'
+string = tobytes.decode('utf-8')
+print (string)                          # Hello
+
+
+if expression1:
+   statement(s)
+elif expression2:
+   statement(s)
+elif expression3:
+   statement(s)
+else:
+   statement(s)
+
+if expression1:
+   statement(s)
+   if expression2:
+      statement(s)
+   elif expression3:
+      statement(s)3
+   else
+      statement(s)
+elif expression4:
+   statement(s)
+else:
+   statement(s)
+
+
+for iterating_var in sequence:
+   statements(s)
+
+while expression:
+   statement(s)
