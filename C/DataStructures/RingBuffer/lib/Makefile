@@ -2,9 +2,7 @@
 LIB_EXTRACFLAGS := -fPIC
 LIB_LDFLAGS := -shared
 
-# library name
-LIBNAME = ringbuf
-TARGET_LIB = lib$(LIBNAME).so
+TARGET_LIB:=libringbuf.so
 
 # Source files for the library libringbuf
 LIB_SRCS := ringbuf.c
