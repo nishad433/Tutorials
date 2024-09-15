@@ -1,45 +1,27 @@
+PWD:=$(shell pwd)
 CC := gcc
-CFLAGS := -Wall
-
-# flags to build shared library
-LIB_EXTRACFLAGS := -fPIC
-LIB_LDFLAGS := -shared
-
-# library name
-LIBNAME = ringbuf
-TARGET_LIB = lib$(LIBNAME).so
-
 
 TARGET_EXE := test
 EXE_SRCS := main.c
 EXE_OBJS := $(EXE_SRCS:.c=.o)
+LIBNAME := ringbuf
+TARGET_LIB := lib$(LIBNAME).so
 
+CFLAGS := -Wall -I$(PWD)/inc
+LDFLAGS := -L$(PWD)/lib -l$(LIBNAME) -Wl,-rpath,$(PWD)/lib
 
 all: $(TARGET_LIB) $(TARGET_EXE)
 
-
-
-
-# Source files for the library libringbuf
-LIB_SRCS := ringbuf.c
-
-# Object files
-LIB_OBJS = $(LIB_SRCS:.c=.o)
-
-# rule to build shared library
-$(TARGET_LIB): $(LIB_OBJS)
-	$(CC) $(LIB_LDFLAGS) -o $@ $(LIB_OBJS)
+$(TARGET_LIB):
+	$(MAKE) -C lib $@ CFLAGS="$(CFLAGS)"
 
 $(TARGET_EXE): $(EXE_OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(EXE_OBJS) -L. -l$(LIBNAME) -Wl,-rpath,.
+	$(CC) -o $@ $(EXE_OBJS) $(LDFLAGS)
 
 %.o: %.c
-ifeq ($(filter $<,$(LIB_SRCS)), $<)
-	$(CC) $(CFLAGS) $(LIB_EXTRACFLAGS) -c $< -o $@
-else
 	$(CC) $(CFLAGS) -c $< -o $@
-endif
 
 clean:
+	$(MAKE) -C lib $@
 	rm -rf *.o
-	rm -rf $(TARGET_LIB) $(TARGET_EXE)
+	rm -rf $(TARGET_EXE)
