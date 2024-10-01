@@ -130,12 +130,12 @@ static inline int oo_objects(struct kmem_cache_order_objects x) {
 
 int config_show(struct seq_file *m, void *arg) {
   seq_printf(m, "LogLevel(L)=%d\n", mist_skb_dbg_log_level);
-  seq_printf(m, "Mod(M)=%d\n", mist_skb_mod);
+  seq_printf(m, "Mod(M)=%d(%s)\n", mist_skb_mod, module_itoa[mist_skb_mod]);
   seq_printf(m, "AllocCapPoint(C)=%d\n", mist_alloc_cap_point);
   seq_printf(m, "CaptureType(T)=%d(%s)\n", mist_cap_type,
              ctype_itoa[mist_cap_type]);
   seq_printf(m, "SKBidx(I)=%d\n", mist_skb_idx);
-  seq_printf(m, "SKBCntr(i)=%d\n", mist_skb_Cntr);
+  seq_printf(m, "SKBdumpCounter(i)=%d\n", mist_skb_Cntr);
   return 0;
 }
 
