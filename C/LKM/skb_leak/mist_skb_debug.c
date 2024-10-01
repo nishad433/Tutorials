@@ -1,5 +1,4 @@
 #include <linux/init.h>
-#include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
@@ -8,6 +7,7 @@
 #include <linux/seq_file.h>
 #include <linux/skbuff.h>
 #include <linux/slab.h>
+#include <linux/types.h>
 #include <linux/uaccess.h>
 #include <net/sock.h>
 #include <slab.h>
@@ -298,14 +298,13 @@ void mist_skb_dump(struct seq_file *m, struct sk_buff *skb, int *skbCount) {
 
   if (logSKB) {
     seq_printf(m,
-               "\n%d] skb=%px pfn=0x%lx len=%d module=%s alloc_cap_point=%d "
+               "\n%d] skb=%px pfn=%ld len=%d module=%s alloc_cap_point=%d "
                "last_seen=%s\n",
                *skbCount, skb, virt_to_pfn(skb), skb->len, module_itoa[module],
                alloc_cap_point, module_itoa[module_last_seen]);
   }
 
-  if (logSKB && mist_dump_cmd == 2 && skb &&
-      (mist_skb_Cntr == -1 || ((--mist_skb_Cntr) > 0))) {
+  if (logSKB && mist_dump_cmd == 2 && skb) {
     decode_hex_pkt(m, skb);
   }
   if (logSKB) {
@@ -321,15 +320,15 @@ int dump_slab_page(struct seq_file *m, struct list_head *head, int obj_size,
     int j;
     uint8_t *slab_obj = NULL;
     struct sk_buff *skb = NULL;
-    dprintf("%d]page=%px 0x%lx va=%px inuse=%d\n", ++i, page, page_to_pfn(page),
-            page_address(page), page->inuse);
+    dprintf("%d]page=%px pfn=%ld va=%px inuse=%d\n", ++i, page,
+            page_to_pfn(page), page_address(page), page->inuse);
     slab_obj = ((uint8_t *)page_address(page));
     for (j = 0; j < objsPerSlab; j++) {
       skb = (struct sk_buff *)(slab_obj + 0x40);
       if (skb->mist_skb_dbg_magic == MIST_SKB_DBG_MAGIC) {
         update_counters(skb);
         if (mist_skb_dbg_log_level > 1) {
-          printk("pfn=0x%lx mist_alloced=0x%x alloced_mist_module=0x%x "
+          printk("pfn=%ld mist_alloced=0x%x alloced_mist_module=0x%x "
                  "mist_alloced_cap_point=0x%x last_seen_module=0x%x\n",
                  virt_to_pfn(skb), skb->mist_alloced, skb->alloced_mist_module,
                  skb->mist_alloced_cap_point, skb->last_seen_module);
