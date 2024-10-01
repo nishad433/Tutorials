@@ -6,6 +6,11 @@ ARCH:=arm64
 COMPILER:=$(HOST_BIN_DIR)/aarch64-buildroot-linux-uclibc-
 EXTRA_CFLAGS=-I$(srctree)/mm/
 
+MYDATE := $(shell date +"%Y-%m-%d")
+MYTIME := $(shell date +"%H:%M:%S")
+
+CFLAGS_mist_skb_debug.o += -DMYDATE=\"$(MYDATE)\" -DMYTIME=\"$(MYTIME)\"
+
 obj-m := ncc.o
 
 ncc-objs := mist_skb_debug.o

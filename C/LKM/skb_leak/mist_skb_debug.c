@@ -19,7 +19,7 @@ int mist_skb_Cntr = 0;
 int mist_dump_cmd = 0;
 int mist_logged_pkt_cnt = 0;
 
-#if 0
+#if 1
 #define dprintf(x,...) do { if(mist_skb_dbg_log_level >= 1) pr_info(x, ##__VA_ARGS__); } while (0)
 #define ddprintf(x,...) do { if(mist_skb_dbg_log_level >= 2) pr_info(x, ##__VA_ARGS__); } while (0)
 #define dddprintf(x,...) do { if(mist_skb_dbg_log_level >= 3) pr_info(x, ##__VA_ARGS__); } while (0)
@@ -60,7 +60,6 @@ char *module_itoa[MIST_MOD_LAST] = {
 	"MIST_BLE",
 	"MIST_SKBUFF",
 	"MIST_DEVNIT",
-	"NA"
 };
 
 #define MIST_C_TYPE_NONE 0x0
@@ -194,7 +193,7 @@ void update_counters(struct sk_buff *skb) {
 }
 
 void decode_hex_pkt(struct seq_file *m, struct sk_buff *skb) {
-	seq_printf(m, "skb_len=%d data=%px dev=%s users=%d sk=%x cloned=%d\n", skb->len, skb->data, skb->dev ? skb->dev->name : "NA", skb->users, (skb->sk != NULL), skb->cloned);
+	seq_printf(m, "skb_len=%d data=%px dev=%s users=%ld sk=%x cloned=%d\n", skb->len, skb->data, skb->dev ? skb->dev->name : "NA", skb->users.refs, (skb->sk != NULL), skb->cloned);
 	if (skb->sk && skb->sk->sk_socket && skb->sk->sk_socket->file && skb->sk->sk_socket->file->f_owner.pid) {
 		seq_printf(m, "pid =%d\n", pid_nr(skb->sk->sk_socket->file->f_owner.pid));
 	} else {
@@ -279,12 +278,15 @@ void mist_skb_dump(struct seq_file *m, struct sk_buff *skb, int *skbCount) {
 
 int dump_slab_page(struct seq_file *m, struct list_head *head, int obj_size, int objsPerSlab, int *skbCount) {
 	struct page *page, *h;
+	int i=0;
 	list_for_each_entry_safe(page, h, head, lru) {
 		int j;
+		uint8_t *slab_obj = NULL;
 		struct sk_buff *skb = NULL;
 		dprintf("%d]page=%px 0x%lx va=%px inuse=%d\n", ++i, page, page_to_pfn(page), page_address(page), page->inuse);
-		skb = (struct sk_buff *)page_address(page);
+		slab_obj =  ((uint8_t *)page_address(page));
 		for (j = 0; j < objsPerSlab; j++) {
+			skb = (struct sk_buff *)(slab_obj + 0x40);
 			if (skb->mist_skb_dbg_magic == MIST_SKB_DBG_MAGIC) {
 				update_counters(skb);
 				if (mist_skb_dbg_log_level > 1) {
@@ -297,7 +299,7 @@ int dump_slab_page(struct seq_file *m, struct list_head *head, int obj_size, int
 					++(*skbCount);
 				}
 			}
-			skb = (struct sk_buff *)(((uint8_t *) skb) + obj_size);
+			slab_obj += obj_size;
 		}
 	}
 
