@@ -130,6 +130,44 @@ static inline int oo_objects(struct kmem_cache_order_objects x) {
   return x.x & OO_MASK;
 }
 
+// taken from arch/arm64/mm/mmu.c
+static int k_addr_valid(unsigned long addr) {
+  pgd_t *pgdp;
+  pud_t *pudp, pud;
+  pmd_t *pmdp, pmd;
+  pte_t *ptep, pte;
+
+  if ((((long)addr) >> VA_BITS) != -1UL)
+    return 0;
+
+  pgdp = pgd_offset_k(addr);
+  if (pgd_none(READ_ONCE(*pgdp)))
+    return 0;
+
+  pudp = pud_offset(pgdp, addr);
+  pud = READ_ONCE(*pudp);
+  if (pud_none(pud))
+    return 0;
+
+  if (pud_sect(pud))
+    return pfn_valid(pud_pfn(pud));
+
+  pmdp = pmd_offset(pudp, addr);
+  pmd = READ_ONCE(*pmdp);
+  if (pmd_none(pmd))
+    return 0;
+
+  if (pmd_sect(pmd))
+    return pfn_valid(pmd_pfn(pmd));
+
+  ptep = pte_offset_kernel(pmdp, addr);
+  pte = READ_ONCE(*ptep);
+  if (pte_none(pte))
+    return 0;
+
+  return pfn_valid(pte_pfn(pte));
+}
+
 int config_show(struct seq_file *m, void *arg) {
   seq_printf(m, "LogLevel(L)=%d\n", mist_skb_dbg_log_level);
   seq_printf(m, "Mod(M)=%d(%s)\n", mist_skb_mod, module_itoa[mist_skb_mod]);
@@ -302,7 +340,8 @@ void mist_skb_dump(struct seq_file *m, struct sk_buff *skb, int *skbCount) {
 
   if (logSKB) {
     seq_printf(m,
-               "\n%d] skb=%px pfn=%ld len=%d module=%s alloc_cap_point=%d "
+               "\n%d] skb=%px pfn=%ld len=%d module=%s "
+               "alloc_cap_point=%d "
                "last_seen=%s last_seen_cap_point=%d\n",
                *skbCount, skb, virt_to_pfn(skb), skb->len, module_itoa[module],
                alloc_cap_point, module_itoa[module_last_seen],
@@ -325,16 +364,22 @@ int dump_slab_page(struct seq_file *m, struct list_head *head, int obj_size,
     int j;
     uint8_t *slab_obj = NULL;
     struct sk_buff *skb = NULL;
-    dprintf("%d]page=%px pfn=%ld va=%px inuse=%d\n", ++i, page,
-            page_to_pfn(page), page_address(page), page->inuse);
+    int valid = k_addr_valid(page_address(page));
+    dprintf("%d]page=%px pfn=%ld va=%px inuse=%d valid=%d\n", ++i, page,
+            page_to_pfn(page), page_address(page), page->inuse, valid);
+    if (!valid) {
+      continue;
+    }
     slab_obj = ((uint8_t *)page_address(page));
     for (j = 0; j < objsPerSlab; j++) {
       skb = (struct sk_buff *)(slab_obj + s_obj_pad_offset);
       if (skb->mist_skb_dbg_magic == MIST_SKB_DBG_MAGIC) {
         update_counters(skb);
         if (mist_skb_dbg_log_level > 1) {
-          printk("pfn=%ld mist_alloced=0x%x alloced_mist_module=0x%x "
-                 "mist_alloced_cap_point=0x%x last_seen_module=0x%x\n",
+          printk("pfn=%ld mist_alloced=0x%x "
+                 "alloced_mist_module=0x%x "
+                 "mist_alloced_cap_point=0x%x "
+                 "last_seen_module=0x%x\n",
                  virt_to_pfn(skb), skb->mist_alloced, skb->alloced_mist_module,
                  skb->mist_alloced_cap_point, skb->last_seen_module);
         }
@@ -369,7 +414,9 @@ void show_counters(struct seq_file *m) {
         host_tot += n_stats.mist_counters[i][j].host;
         bridged_tot += n_stats.mist_counters[i][j].bridged;
         if (n_stats.mist_counters[i][j].cntr) {
-          seq_printf(m, "%s Cap_Point%d_Total=%llu bridged=%llu host=%llu\n",
+          seq_printf(m,
+                     "%s Cap_Point%d_Total=%llu bridged=%llu "
+                     "host=%llu\n",
                      module_itoa[i], j, n_stats.mist_counters[i][j].cntr,
                      n_stats.mist_counters[i][j].bridged,
                      n_stats.mist_counters[i][j].host);
@@ -411,7 +458,8 @@ void build_stats(struct seq_file *m) {
     slabs_partial = n->nr_partial;
     slabs_total = slabs_node(s, node);
     node_nr_objs = atomic_long_read(&n->total_objects);
-    dprintf("node=%d n=%px slabs_total=%lu slabs_partial=%lu slabs_full=%lu "
+    dprintf("node=%d n=%px slabs_total=%lu slabs_partial=%lu "
+            "slabs_full=%lu "
             "tot_objs=%lu\n",
             node, n, slabs_total, slabs_partial, (slabs_total - slabs_partial),
             node_nr_objs);
@@ -448,17 +496,20 @@ int skb_dump_single_show(struct seq_file *m, void *arg) {
 }
 
 int __init mist_skb_dbg_init(void) {
-  mist_skb_dbg_proc_dir = proc_mkdir("mist_skb_debug", NULL);
-  pr_info("MIST SKB Debug Module INIT\n");
-  if (mist_skb_dbg_proc_dir) {
-    mist_proc_create_single(config, mist_skb_dbg_proc_dir, config_wr);
-    mist_proc_create_single(mist_skb_debug_dump, mist_skb_dbg_proc_dir, NULL);
-    mist_proc_create_single(skb_dump, mist_skb_dbg_proc_dir, NULL);
-    mist_proc_create_single(skb_dump_single, mist_skb_dbg_proc_dir, NULL);
-  }
+  pr_info("MIST SKB Debug Module INIT, skb->mist_skb_dbg_magic=0x%x\n",
+          offsetof(struct sk_buff, mist_skb_dbg_magic));
   if (skbuff_head_cache) {
+    mist_skb_dbg_proc_dir = proc_mkdir("mist_skb_debug", NULL);
+    if (mist_skb_dbg_proc_dir) {
+      mist_proc_create_single(config, mist_skb_dbg_proc_dir, config_wr);
+      mist_proc_create_single(mist_skb_debug_dump, mist_skb_dbg_proc_dir, NULL);
+      mist_proc_create_single(skb_dump, mist_skb_dbg_proc_dir, NULL);
+      mist_proc_create_single(skb_dump_single, mist_skb_dbg_proc_dir, NULL);
+    }
+
     s_obj_pad_offset = skbuff_head_cache->red_left_pad;
-    printk("[%s] slab=%px %s size=%d object_size=%d flags=%x pad_offset=0x%x\n",
+    printk("[%s] slab=%px %s size=%d object_size=%d flags=%x "
+           "pad_offset=0x%x\n",
            __func__, skbuff_head_cache, skbuff_head_cache->name,
            skbuff_head_cache->size, skbuff_head_cache->object_size,
            skbuff_head_cache->flags, s_obj_pad_offset);
