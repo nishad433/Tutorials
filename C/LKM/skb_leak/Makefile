@@ -1,6 +1,6 @@
-HOST_BIN_DIR:=/home/nishad/mistsys/master/apfw/output/aphx/host/bin
+HOST_BIN_DIR:=/home/nishad/mistsys/mance/apfw/output/aphx/host/bin
 #KDIR=/lib/modules/$(shell uname -r)/build
-KDIR:=/home/nishad/mistsys/master/apfw/output/aphx/build/linux-4.19.170
+KDIR:=/home/nishad/mistsys/mance/apfw/output/aphx/build/linux-4.19.170
 PWD:=$(shell pwd)
 ARCH:=arm64
 COMPILER:=$(HOST_BIN_DIR)/aarch64-buildroot-linux-uclibc-

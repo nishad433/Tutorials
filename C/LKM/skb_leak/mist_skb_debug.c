@@ -23,7 +23,7 @@ int mist_logged_pkt_cnt = 0;
 
 int s_obj_pad_offset = 0;
 
-#if 1
+#if 0
 #define dprintf(x, ...)                                                        \
   do {                                                                         \
     if (mist_skb_dbg_log_level >= 1)                                           \
@@ -131,7 +131,7 @@ static inline int oo_objects(struct kmem_cache_order_objects x) {
 }
 
 // taken from arch/arm64/mm/mmu.c
-static int k_addr_valid(unsigned long addr) {
+int k_addr_valid(unsigned long addr) {
   pgd_t *pgdp;
   pud_t *pudp, pud;
   pmd_t *pmdp, pmd;
@@ -373,7 +373,9 @@ int dump_slab_page(struct seq_file *m, struct list_head *head, int obj_size,
     slab_obj = ((uint8_t *)page_address(page));
     for (j = 0; j < objsPerSlab; j++) {
       skb = (struct sk_buff *)(slab_obj + s_obj_pad_offset);
-      if (skb->mist_skb_dbg_magic == MIST_SKB_DBG_MAGIC) {
+      // if allocated, increment refcount, so that no one else frees it up
+      if (skb->mist_skb_dbg_magic == MIST_SKB_DBG_MAGIC &&
+          refcount_inc_not_zero_checked(&skb->users)) {
         update_counters(skb);
         if (mist_skb_dbg_log_level > 1) {
           printk("pfn=%ld mist_alloced=0x%x "
@@ -389,6 +391,9 @@ int dump_slab_page(struct seq_file *m, struct list_head *head, int obj_size,
         if (skbCount) {
           ++(*skbCount);
         }
+        // decrement reference count, if the original user already called
+        // kree_skb, below call will free the skb
+        kfree_skb(skb);
       }
       slab_obj += obj_size;
     }
@@ -463,8 +468,10 @@ void build_stats(struct seq_file *m) {
             "tot_objs=%lu\n",
             node, n, slabs_total, slabs_partial, (slabs_total - slabs_partial),
             node_nr_objs);
+    spin_lock(&n->list_lock);
     dump_slab_page(m, &n->partial, s->size, objsperslab, &skbCount);
     dump_slab_page(m, &n->full, s->size, objsperslab, &skbCount);
+    spin_unlock(&n->list_lock);
   }
 }
 
