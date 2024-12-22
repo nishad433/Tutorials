@@ -21,3 +21,27 @@ node_t *list_add(node_t **head, int data){
     }
     return temp;
 }
+
+
+int list_del(node_t **head, int data){
+    int ret = 0;
+    if(*head!=NULL){
+        node_t *curr, *prev;
+        curr=*head;
+        prev=NULL;
+
+        do{
+            if(curr->data == data){
+                if(prev){
+                    prev->next = curr->next;
+                }
+                free(curr);
+                ret = 1;
+                break;
+            }
+        prev=curr;
+        curr=curr->next;
+        }while(curr);
+    }
+    return ret;
+}

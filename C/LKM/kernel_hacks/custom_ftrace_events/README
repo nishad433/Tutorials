@@ -1,3 +1,4 @@
+copy ncc.h to include/trace/events/
 in C file add this
 
 #define CREATE_TRACE_POINTS

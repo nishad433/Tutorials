@@ -17,7 +17,7 @@ int mist_skb_mod = 0;
 int mist_alloc_cap_point = 0;
 int mist_cap_type = 0;
 int mist_skb_idx = 0;
-int mist_skb_Cntr = 0;
+int mist_skb_Cntr = 100;
 int mist_dump_cmd = 0;
 int mist_logged_pkt_cnt = 0;
 
@@ -93,7 +93,8 @@ char *module_itoa[MIST_MOD_LAST] = {
 #define MIST_C_TYPE_MOD_CAP 0x2
 #define MIST_C_TYPE_MOD_ONLY 0x3
 #define MIST_C_TYPE_ALL 0x4
-#define MIST_C_TYPE_LAST 0x5
+#define MIST_C_TYPE_LASTSEEN_MOD_ONLY 0x5
+#define MIST_C_TYPE_LAST 0x6
 
 char *ctype_itoa[MIST_C_TYPE_LAST] = {
     "None",
@@ -101,6 +102,7 @@ char *ctype_itoa[MIST_C_TYPE_LAST] = {
     "skbs matching module & cap_point",
     "skbs matching module",
     "all skbs",
+    "skbs last seen on module",
 };
 
 typedef struct {
@@ -328,6 +330,11 @@ void mist_skb_dump(struct seq_file *m, struct sk_buff *skb, int *skbCount) {
   case MIST_C_TYPE_ALL:
     logSKB = 1;
     break;
+  case MIST_C_TYPE_LASTSEEN_MOD_ONLY:
+    if (module_last_seen == mist_skb_mod) {
+      logSKB = 1;
+    }
+    break;
   case MIST_C_TYPE_NONE:
   default:
     logSKB = 0;
@@ -342,10 +349,14 @@ void mist_skb_dump(struct seq_file *m, struct sk_buff *skb, int *skbCount) {
     seq_printf(m,
                "\n%d] skb=%px pfn=%ld len=%d module=%s "
                "alloc_cap_point=%d "
-               "last_seen=%s last_seen_cap_point=%d\n",
+               "last_seen=%s last_seen_cap_point=%d skb_len=%d dev=%s users=%d "
+               "cloned=%d sk=%x ncc=%d file=%s func=%s line=%d\n",
                *skbCount, skb, virt_to_pfn(skb), skb->len, module_itoa[module],
                alloc_cap_point, module_itoa[module_last_seen],
-               last_seen_cap_point);
+               last_seen_cap_point, skb->len, skb->dev ? skb->dev->name : "NA",
+               refcount_read(&skb->users), skb->cloned, (skb->sk != NULL), skb->ncc,
+               (skb->ncc_file) ? skb->ncc_file : "NA",
+               (skb->ncc_func) ? skb->ncc_func : "NA", skb->ncc_line);
   }
 
   if (logSKB && mist_dump_cmd == 2 && skb) {
@@ -455,6 +466,7 @@ void build_stats(struct seq_file *m) {
   int skbCount = 0;
   struct kmem_cache_node *n;
   int objsperslab;
+  unsigned long flags;
   objsperslab = oo_objects(s->oo);
   dprintf("slab_name=%s size=%d objsPerSlab=%d\n", s->name, s->size,
           objsperslab);
@@ -468,10 +480,10 @@ void build_stats(struct seq_file *m) {
             "tot_objs=%lu\n",
             node, n, slabs_total, slabs_partial, (slabs_total - slabs_partial),
             node_nr_objs);
-    spin_lock(&n->list_lock);
+    spin_lock_irqsave(&n->list_lock, flags);
     dump_slab_page(m, &n->partial, s->size, objsperslab, &skbCount);
     dump_slab_page(m, &n->full, s->size, objsperslab, &skbCount);
-    spin_unlock(&n->list_lock);
+    spin_unlock_irqrestore(&n->list_lock, flags);
   }
 }
 

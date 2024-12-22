@@ -16,15 +16,22 @@ void add_Item()
 
 void delete_Item()
 {
-
+    int data,ret;
+    printf("Enter Data to delete:");
+    scanf("%d",&data);
+    ret=list_del(&head, data);
+    if(ret){
+        disp_List();
+    }
 }
 
 void disp_List()
 {
-    do{
-        printf("data @%p is %d\n",head,head->data);
-        head=head->next;
-    }while(head!=NULL);
+    node_t *tmp = head;
+    while(tmp){
+        printf("(%p,%d)%s",tmp,tmp->data,(tmp->next)?"->":"\n");
+        tmp=tmp->next;
+    }
 }
 
 void search_Item()
@@ -43,7 +50,8 @@ int main()
         printf("2. Delete Item\n");
         printf("3. Display List\n");
         printf("4. Search Item\n");
-        printf("Choice[1-4]:");
+        printf("5. Exit\n");
+        printf("Choice[1-5]:");
         scanf("%d",&ch);
         switch(ch){
             case 1:
@@ -58,10 +66,11 @@ int main()
             case 4:
                     search_Item();
                     break;
+            case 5:
+            default:
+                    break;
         }
-        printf("Continue[0/1]:");
-        scanf("%d",&ch);
-    }while(ch == 1);
+    }while(ch != 5);
 
     return 0;
 }
