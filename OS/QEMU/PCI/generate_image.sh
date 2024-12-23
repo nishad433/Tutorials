@@ -119,7 +119,7 @@ copy_needed_shared_libraries() {
 }
 
 print_usage() {
-	printf "Usage: %s <toolchain|kernel|busybox|rootfs> [outdir]\n" "$script_name"
+	printf "Usage: %s <toolchain|kernel|busybox|rootfs|all> [outdir]\n" "$script_name"
 }
 
 build_toolchain() {
@@ -224,27 +224,27 @@ create_rootfs() {
 				# Block Device: /dev/vda
 				sudo mknod -m 666 vda b 254 0
 
-			# Serial Console: /dev/ttyAMA0
-			sudo mknod -m 666 ttyAMA0 c 5 64
+				# Serial Console: /dev/ttyAMA0
+				sudo mknod -m 666 ttyAMA0 c 5 64
 
-			# Null Device: /dev/null
-			sudo mknod -m 666 null c 1 3
+				# Null Device: /dev/null
+				sudo mknod -m 666 null c 1 3
 
-			# Random Device: /dev/random and /dev/urandom
-			sudo mknod -m 666 random c 1 8
-			sudo mknod -m 666 urandom c 1 9
+				# Random Device: /dev/random and /dev/urandom
+				sudo mknod -m 666 random c 1 8
+				sudo mknod -m 666 urandom c 1 9
 
-			# Console Device: /dev/console
-			sudo mknod -m 666 console c 5 1
+				# Console Device: /dev/console
+				sudo mknod -m 666 console c 5 1
 
-			# PTY Device: /dev/ptmx
-			sudo mknod -m 666 ptmx c 5 2
+				# PTY Device: /dev/ptmx
+				sudo mknod -m 666 ptmx c 5 2
 
-			# Memory Device: /dev/mem
-			sudo mknod -m 666 mem c 1 1
+				# Memory Device: /dev/mem
+				sudo mknod -m 666 mem c 1 1
 
-			# zero Device: /dev/zero
-			sudo mknod -m 666 zero c 1 5
+				# zero Device: /dev/zero
+				sudo mknod -m 666 zero c 1 5
 		)
 
 		# Create /etc/fstab
@@ -315,6 +315,13 @@ busybox)
 	;;
 
 rootfs)
+	create_rootfs
+	;;
+
+all)
+	build_toolchain
+	build_kernel
+	build_busybox
 	create_rootfs
 	;;
 *)

@@ -68,33 +68,7 @@ Planning to have memory IO regions, DMA and IRQ for the PCI device.
 
 	• Create rootfs(see generate_image.sh).
 		• Set up the directory structure for the root filesystem
-			mkdir -p /tmp/ncc/my_rootfs/{bin,boot,dev,etc,lib,lib64,mnt,opt,proc,root,sbin,sys,tmp,usr,var}
-
-		• Install Essential Packages (Cross-Compile)
-			# Install Basic Binaries (e.g., BusyBox):
-			wget https://busybox.net/downloads/busybox-1.35.0.tar.bz2
-			tar -xjf busybox-1.35.0.tar.bz2
-			cd busybox-1.35.0
-			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- defconfig
-			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu-
-			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- CONFIG_PREFIX=/tmp/ncc/my_rootfs/ install
-
-		• Copy Required Libraries: Copy the necessary libraries from your cross-compiler's library directory (e.g., from ~/x-tools/aarch64-unknown-linux-gnu/libc/lib) 
-		  into the lib or lib64 directories in the root filesystem.. You can use the ldd command to check the required libraries for each binary:
-			readelf -d ~/my_rootfs/bin/busybox
-
-		• Create Minimal Configuration Files:
-			# Create /etc/fstab:
-			echo -e "proc /proc proc defaults 0 0\n/dev/vda2 / ext4 defaults 0 1" > /tmp/ncc/my_rootfs/etc/fstab
-
-			# Create /etc/passwd:
-			echo "root:x:0:0:root:/root:/bin/sh" > /tmp/ncc/my_rootfs/etc/passwd
-
-			# Create /etc/inittab (Optional):
-			echo "::sysinit:/bin/sh" > /tmp/ncc/my_rootfs/etc/inittab
-
-			# Create /etc/hostname (Optional):
-			echo "NishadSystem" > /tmp/ncc/my_rootfs/etc/hostname
+			mkdir -p /tmp/ncc/my_rootfs/{bin,boot,dev,etc,home,lib,lib64,mnt,opt,proc,root,sbin,sys,tmp,usr,var}
 
 		• Create /dev files
                         # Block Device: /dev/vda
@@ -119,6 +93,32 @@ Planning to have memory IO regions, DMA and IRQ for the PCI device.
 			# Memory Device: /dev/mem
 			sudo mknod /tmp/ncc/my_rootfs/dev/mem c 1 1
 
+		• Create Minimal Configuration Files:
+			# Create /etc/fstab:
+			echo -e "proc /proc proc defaults 0 0\n/dev/vda2 / ext4 defaults 0 1" > /tmp/ncc/my_rootfs/etc/fstab
+
+			# Create /etc/passwd:
+			echo "root:x:0:0:root:/root:/bin/sh" > /tmp/ncc/my_rootfs/etc/passwd
+
+			# Create /etc/inittab (Optional):
+			echo "::sysinit:/bin/sh" > /tmp/ncc/my_rootfs/etc/inittab
+
+			# Create /etc/hostname (Optional):
+			echo "NishadSystem" > /tmp/ncc/my_rootfs/etc/hostname
+
+		• Install Essential Packages (Cross-Compile)
+			# Install Basic Binaries (e.g., BusyBox):
+			wget https://busybox.net/downloads/busybox-1.35.0.tar.bz2
+			tar -xjf busybox-1.35.0.tar.bz2
+			cd busybox-1.35.0
+			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- defconfig
+			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu-
+			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- CONFIG_PREFIX=/tmp/ncc/my_rootfs/ install
+
+		• Copy Required Libraries: Copy the necessary libraries from your cross-compiler's library directory (e.g., from ~/x-tools/aarch64-unknown-linux-gnu/libc/lib) 
+		  into the lib or lib64 directories in the root filesystem.. You can use the ldd command to check the required libraries for each binary:
+			readelf -d ~/my_rootfs/bin/busybox
+
 		• Create the Root Filesystem Image
 			# Create an ext4 image:
 			dd if=/dev/zero of=rootfs.ext4 bs=1M count=256  # Adjust size as needed
@@ -128,6 +128,7 @@ Planning to have memory IO regions, DMA and IRQ for the PCI device.
 			sudo mount -o loop rootfs.ext4 /tmp/ncc/mnt
 			sudo cp -a /tmp/ncc/my_rootfs/* /tmp/ncc/mnt/
 			sudo umount /tmp/ncc/mnt
+
 	• Run QEMU aarch64 emulator with Kernel image and rootfs just built.
 		./qemu-system-aarch64 -M virt -cpu cortex-a53 -nographic -smp 1 -kernel /tmp/ncc/linux-4.19.287/arch/arm64/boot/Image -append "rootwait root=/dev/vda console=ttyAMA0" -drive file=/tmp/ncc/rootfs.img,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0	
 
