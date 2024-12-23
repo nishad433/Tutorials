@@ -40,9 +40,9 @@ Planning to have memory IO regions, DMA and IRQ for the PCI device.
 			After setting all your options, save and exit the menu.
 		./ct-ng  menuconfig  (or where you have installed it)
 	• Build the Toolchain
-		/opt/crosstool-ng/bin/ct-ng build
-	• Install the Toolchain.(Default is ~/x-tools, otherwise, set CT_PREFIX to custom path through menuconfig or export CT_PREFIX as export CT_PREFIX=/custom/path/to/toolchain)
-		/opt/crosstool-ng/bin/ct-ng install
+		./opt/crosstool-ng/bin/ct-ng build
+	#• Install the Toolchain.(Default is ~/x-tools, otherwise, set CT_PREFIX to custom path through menuconfig or export CT_PREFIX as export CT_PREFIX=/custom/path/to/toolchain)
+	#	./opt/crosstool-ng/bin/ct-ng install
 	• Verify the Toolchain
 		aarch64-unknown-linux-gnu-gcc --version
 	• Set the Environment Variables
