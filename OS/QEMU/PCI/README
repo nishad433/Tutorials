@@ -1,0 +1,133 @@
+This project explores loading a latest kernel with a small rootfs using qemu-(arm/aarch64), then
+Create a PCI device and then explore that PCI device from the emulated linux machine.
+Planning to have memory IO regions, DMA and IRQ for the PCI device.
+
+
+• (Bullet) → Ctrl-V u 2022
+◦ (Circle bullet) → Ctrl-V u 25E6
+▪ (Square bullet) → Ctrl-V u 25AA    (ctrl and v together, then press u and then code)
+
+
+▪ Building toolchain using crosstools-ng
+	• Dependancies: sudo apt install texinfo help2man libtool libtool-bin
+	• Download tar (Latest: 1.26.0) and untar it.
+		VERSION="1.26.0"; wget http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-${VERSION}.tar.xz
+		tar -xf crosstool-ng-1.26.0.tar.xz -C ./
+		cd crosstool-ng-1.26.0/
+	• Build and Install Crosstool-NG
+		# Prepare and configure the build environment
+		./bootstrap
+
+		# Configure the installation path for Crosstool-NG
+		./configure --prefix=/tmp/ncc/crosstool-ng-1.26.0/opt/crosstool-ng (add --prefix if you want to install it to custom directory)
+
+		# Build and install Crosstool-NG
+		make
+		sudo make install  # only needed if you want to install, otherwise use it (ct-ng ) from the build directory itself
+	• Set Up the Crosstool-NG Configuration
+		# Run the Crosstool-NG Configuration Interface:
+		Configure the Target Architecture:
+			In the menuconfig interface, navigate to Target options.
+			Set the Target Architecture to aarch64 (this is the 64-bit ARM architecture).
+			Optionally, configure the subtarget for a specific ARM processor (e.g., Cortex-A53).
+			Choose the C Library:
+			Navigate to the C library section.
+			Choose bare-metal or Linux (if so, set CT_LINUX_VERSION="4.19.287" whichever kernel version being used.)
+			You can choose glibc (GNU C Library), newlib, or musl as the C library. For most systems, glibc is the default.
+			Select Other Toolchain Options:
+			You can further configure options like GCC version, binutils, and additional libraries.
+			Save the Configuration:
+			After setting all your options, save and exit the menu.
+		./ct-ng  menuconfig  (or where you have installed it)
+	• Build the Toolchain
+		/opt/crosstool-ng/bin/ct-ng build
+	• Install the Toolchain.(Default is ~/x-tools, otherwise, set CT_PREFIX to custom path through menuconfig or export CT_PREFIX as export CT_PREFIX=/custom/path/to/toolchain)
+		/opt/crosstool-ng/bin/ct-ng install
+	• Verify the Toolchain
+		aarch64-unknown-linux-gnu-gcc --version
+	• Set the Environment Variables
+		export PATH=$PATH:/path/to/your/toolchain/bin
+
+▪ P1: Load a linux kernel and a small rootfs using qemu-system-arm or qemu-system-aarch64
+	• Using kernel 4.19.287 and busybox
+	• Download arm/aarch64 toolchain. (use crosstool-ng or download from arm website)
+	• Download Linux kernel 4.19.287 : wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.287.tar.xz  or wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.287.tar.gz
+	• Untar using tar -xf linux-4.19.287.tar.xz -C ./ or tar -xf linux-4.19.287.tar.gz -C ./; cd linux-4.19.287/
+	• Build the source.
+		# To use a default configuration for AARCH64:
+		make ARCH=arm64 defconfig
+
+		# Build the Kernel
+		make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- -j$(nproc)
+
+		# Build the Kernel Modules (Optional)
+		make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- modules
+	• Once the build completes, the kernel image will typically be located at:
+		arch/arm64/boot/Image for the uncompressed kernel image
+		arch/arm64/boot/zImage for the compressed kernel image
+
+	• Create rootfs(see generate_image.sh).
+		• Set up the directory structure for the root filesystem
+			mkdir -p /tmp/ncc/my_rootfs/{bin,boot,dev,etc,lib,lib64,mnt,opt,proc,root,sbin,sys,tmp,usr,var}
+
+		• Install Essential Packages (Cross-Compile)
+			# Install Basic Binaries (e.g., BusyBox):
+			wget https://busybox.net/downloads/busybox-1.35.0.tar.bz2
+			tar -xjf busybox-1.35.0.tar.bz2
+			cd busybox-1.35.0
+			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- defconfig
+			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu-
+			make ARCH=arm64 CROSS_COMPILE=~/x-tools/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu- CONFIG_PREFIX=/tmp/ncc/my_rootfs/ install
+
+		• Copy Required Libraries: Copy the necessary libraries from your cross-compiler's library directory (e.g., from ~/x-tools/aarch64-unknown-linux-gnu/libc/lib) 
+		  into the lib or lib64 directories in the root filesystem.. You can use the ldd command to check the required libraries for each binary:
+			readelf -d ~/my_rootfs/bin/busybox
+
+		• Create Minimal Configuration Files:
+			# Create /etc/fstab:
+			echo -e "proc /proc proc defaults 0 0\n/dev/vda2 / ext4 defaults 0 1" > /tmp/ncc/my_rootfs/etc/fstab
+
+			# Create /etc/passwd:
+			echo "root:x:0:0:root:/root:/bin/sh" > /tmp/ncc/my_rootfs/etc/passwd
+
+			# Create /etc/inittab (Optional):
+			echo "::sysinit:/bin/sh" > /tmp/ncc/my_rootfs/etc/inittab
+
+			# Create /etc/hostname (Optional):
+			echo "NishadSystem" > /tmp/ncc/my_rootfs/etc/hostname
+
+		• Create /dev files
+                        # Block Device: /dev/vda
+			sudo mknod /tmp/ncc/my_rootfs/dev/vda b 254 0
+
+			# Serial Console: /dev/ttyAMA0
+			sudo mknod /tmp/ncc/my_rootfs/dev/ttyAMA0 c 5 64
+
+			# Null Device: /dev/null
+			sudo mknod /tmp/ncc/my_rootfs/dev/null c 1 3
+
+			# Random Device: /dev/random and /dev/urandom
+			sudo mknod /tmp/ncc/my_rootfs/dev/random c 1 8
+			sudo mknod /tmp/ncc/my_rootfs/dev/urandom c 1 9
+
+			# Console Device: /dev/console
+			sudo mknod /tmp/ncc/my_rootfs/dev/console c 5 1
+
+			# PTY Device: /dev/ptmx
+			sudo mknod /tmp/ncc/my_rootfs/dev/ptmx c 5 2
+
+			# Memory Device: /dev/mem
+			sudo mknod /tmp/ncc/my_rootfs/dev/mem c 1 1
+
+		• Create the Root Filesystem Image
+			# Create an ext4 image:
+			dd if=/dev/zero of=rootfs.ext4 bs=1M count=256  # Adjust size as needed
+			mkfs.ext4 rootfs.ext4
+
+			# Mount the image and copy files:
+			sudo mount -o loop rootfs.ext4 /tmp/ncc/mnt
+			sudo cp -a /tmp/ncc/my_rootfs/* /tmp/ncc/mnt/
+			sudo umount /tmp/ncc/mnt
+	• Run QEMU aarch64 emulator with Kernel image and rootfs just built.
+		./qemu-system-aarch64 -M virt -cpu cortex-a53 -nographic -smp 1 -kernel /tmp/ncc/linux-4.19.287/arch/arm64/boot/Image -append "rootwait root=/dev/vda console=ttyAMA0" -drive file=/tmp/ncc/rootfs.img,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0	
+
