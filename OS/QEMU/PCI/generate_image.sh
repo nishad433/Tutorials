@@ -219,33 +219,33 @@ create_rootfs() {
 
 		# Create Essential Device Nodes
 
-		(
-			cd dev &&
-				# Block Device: /dev/vda
-				sudo mknod -m 666 vda b 254 0
+		# 	(
+		# 		cd dev &&
+		 		# Block Device: /dev/vda
+		#		sudo mknod -m 666 vda b 254 0
 
 				# Serial Console: /dev/ttyAMA0
-				sudo mknod -m 666 ttyAMA0 c 5 64
+		#		sudo mknod -m 666 ttyAMA0 c 5 64
 
 				# Null Device: /dev/null
-				sudo mknod -m 666 null c 1 3
+		#		sudo mknod -m 666 null c 1 3
 
 				# Random Device: /dev/random and /dev/urandom
-				sudo mknod -m 666 random c 1 8
-				sudo mknod -m 666 urandom c 1 9
+		#		sudo mknod -m 666 random c 1 8
+		#		sudo mknod -m 666 urandom c 1 9
 
 				# Console Device: /dev/console
-				sudo mknod -m 666 console c 5 1
+		#		sudo mknod -m 666 console c 5 1
 
 				# PTY Device: /dev/ptmx
-				sudo mknod -m 666 ptmx c 5 2
+		#		sudo mknod -m 666 ptmx c 5 2
 
 				# Memory Device: /dev/mem
-				sudo mknod -m 666 mem c 1 1
+		#		sudo mknod -m 666 mem c 1 1
 
 				# zero Device: /dev/zero
-				sudo mknod -m 666 zero c 1 5
-		)
+		#		sudo mknod -m 666 zero c 1 5
+		#	)
 
 		# Create /etc/fstab
 		create_rootfs_file fstab

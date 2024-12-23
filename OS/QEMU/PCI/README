@@ -70,7 +70,7 @@ Planning to have memory IO regions, DMA and IRQ for the PCI device.
 		• Set up the directory structure for the root filesystem
 			mkdir -p /tmp/ncc/my_rootfs/{bin,boot,dev,etc,home,lib,lib64,mnt,opt,proc,root,sbin,sys,tmp,usr,var}
 
-		• Create /dev files
+		• Create /dev files. (NOTE: This step is not needed, looks like /dev/ nodes are automatically created on boot)
                         # Block Device: /dev/vda
 			sudo mknod /tmp/ncc/my_rootfs/dev/vda b 254 0
 
