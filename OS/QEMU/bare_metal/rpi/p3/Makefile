@@ -1,8 +1,11 @@
-# Define the top-level directory
+# Root directory of the project
 ROOT_DIR := $(shell pwd)
 
-# Set the target platform
+# Set the target platform (default: raspi4b)
 PLATFORM ?= raspi4b
+
+# Supported platforms
+PLATFORMS := raspi3 raspi4b
 
 # Include platform-specific makefiles
 ifeq ($(PLATFORM), raspi4b)
@@ -13,10 +16,6 @@ else
     $(error "Unsupported PLATFORM: $(PLATFORM). Use one of raspi3 or raspi4b.")
 endif
 
-
-# List of valid platforms
-PLATFORMS := raspi3|raspi4b
-
 # Default tools (overridden by platform-specific makefiles)
 LD ?= ld
 OBJCOPY ?= objcopy
@@ -24,7 +23,7 @@ OBJDUMP ?= objdump
 LINKER_SCRIPT ?= linker.ld
 LINKER_FLAGS ?=
 
-# Help target to display usage instructions
+# Help target - displays usage instructions
 .PHONY: help
 help:
 	@printf "make %-10s PLATFORM=<%s> %-10s: builds the image\n" "all" "$(PLATFORMS)" ""
@@ -36,26 +35,33 @@ help:
 # Default build target
 .PHONY: all
 all: build objects
+	@# Link all objects files and get the kernel elf
 	@printf "%-10s %-15s %s\n" "" "[LD]" "$(KERNEL).elf"
 	@$(LD) $(OBJS) -T $(LINKER_SCRIPT) $(LINKER_FLAGS) -o $(KERNEL).elf
-	@# get list of all symbols, skip the ones starting with '$'
+
+	@# Generate symbol listings
 	@printf "%-10s %-15s %s\n" "" "[NM]" "$(KERNEL).elf"
-	@$(NM) -n $(KERNEL).elf | sort | grep -v '\$$' | awk '{if($$2=="t"|| $$2=="T")print $$0}' > .nmfirstpass
-	@# get list of all symbols, skip the ones starting with '$', pass it script to generate symbol_area.s
+	@$(NM) -n $(KERNEL).elf | sort | grep -v '\$$' | awk '{if($$2=="t" || $$2=="T") print $$0}' > .nmfirstpass
+
+	@# Generate symbol_area.s using the symbol table
 	@printf "%-10s %-15s %s\n" "" "[GEN]" "$(KERNEL).elf [syms]"
 	@$(NM) -n $(KERNEL).elf | sort | grep -v '\$$' | awk '{if($$2=="t"|| $$2=="T")print $$0}' | scripts/generate_syms.py
-	@# compile symbol_area.s
-	@$(MAKE) -C ./ genarate_sym_section
-	@# build kernel by link all object files (including symbol_area.o)
+
+	@# Compile symbol_area.s
+	@$(MAKE) -C ./ generate_sym_section
+
+	@# Final linking of object files (with new symbol_area.o)
 	@printf "%-10s %-15s %s\n" "" "[LD]" "$(KERNEL).elf"
 	@$(LD) $(OBJS) -T $(LINKER_SCRIPT) $(LINKER_FLAGS) -o $(KERNEL).elf
-	@# just to compare and verify that adding symbol_area.o doesnt add any new symbols.
+
+	@# Ensure no new symbols are introduced by symbol_area.o
 	@printf "%-10s %-15s %s\n" "" "[NM]" "$(KERNEL).elf"
 	@$(NM) -n $(KERNEL).elf | sort | grep -v '\$$' | awk '{if($$2=="t"|| $$2=="T")print $$0}' > .nmsecondpass
+
 	@printf "%-10s %-15s %s\n" "" "[OBJCOPY]" "$(KERNEL).bin"
 	@$(OBJCOPY) -O binary $(KERNEL).elf $(KERNEL).bin
 
-# include build make rules
+# Include additional build rules
 include $(ROOT_DIR)/build.mk
 
 # Locate object files

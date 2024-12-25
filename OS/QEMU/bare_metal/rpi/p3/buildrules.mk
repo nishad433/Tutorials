@@ -4,8 +4,8 @@
 # Set the current working directory
 PWD := $(shell pwd)
 
-# Define the directories for which make will be invoked (subdirectories with 'obj-y')
-dirs = $(filter %/,$(obj-y))
+# Define directories that contain 'obj-y' files (subdirectories to invoke make on)
+DIRS = $(filter %/,$(obj-y))
 
 # The 'all' target is invoked by the top-level Makefile
 .PHONY: all
@@ -21,13 +21,14 @@ all: call_submake
 	@printf "%-10s %-15s %s\n" "" "[CC]" "$(subst $(ROOT_DIR)/,,$(PWD)/)$<"
 	@$(CC) $(ASFLAGS) -c $< -o $@
 
-# Rule to handle subdirectories, invoking 'make' in each subdirectory
+# Rule to invoke 'make' in each subdirectory that contains 'obj-y' files
 .PHONY: call_submake
 call_submake:
-	@for dir in $(dirs); do \
+	@for dir in $(DIRS); do \
 		$(MAKE) -C $$dir $(MAKECMDGOALS) || exit 1; \
 	done
 
+# Clean up build artifacts
 .PHONY: clean
 clean: call_submake
 	@printf "%-10s %-15s %s\n" "" "[CLEAN]" "$(shell realpath --relative-to=$(ROOT_DIR) $(CURDIR))"

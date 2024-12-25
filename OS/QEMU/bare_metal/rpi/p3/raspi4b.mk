@@ -1,8 +1,8 @@
 # Debug settings
 ifeq ($(DEBUG), 1)
-    MAKE_FLAGS := -w
+    MAKE_FLAGS := -w            # Show all commands
 else
-    MAKE_FLAGS := -s --no-print-directory
+    MAKE_FLAGS := -s --no-print-directory  # Silent mode
 endif
 
 # Toolchain configuration
@@ -35,13 +35,13 @@ LINKER_SCRIPT := link64.ld
 # Target settings
 KERNEL := kernel8
 
-# Build configs
+# Build configuration files
 DEFCONFIG_FILE := $(ROOT_DIR)/arch/arm64/configs/raspi4b_defconfig
-KCONFIG_FILE := $(ROOT_DIR)/.config
+KCONFIG_FILE   := $(ROOT_DIR)/.config
 include $(DEFCONFIG_FILE)
 
 # MAKE settings
-MAKE :=make $(MAKE_FLAGS)
+MAKE := make $(MAKE_FLAGS)
 
 # QEMU configuration
 QEMU		  := qemu-system-aarch64
