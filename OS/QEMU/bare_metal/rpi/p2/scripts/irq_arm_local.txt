@@ -1,0 +1,24 @@
+0x00,ARM_CONTROL,ARM Timer and AXI Error IRQ control
+0x0c,CORE_IRQ_CONTROL,VideoCore Interrupt Control
+0x10,PMU_CONTROL_SET,PMU Bit Set
+0x14,PMU_CONTROL_CLR,PMU Bit Clear
+0x24,PERI_IRQ_ROUTE0,Peripheral Interrupt Routing (Bank 0)
+0x30,AXI_QUIET_TIME,AXI Outstanding Transaction Time and IRQ Control
+0x34,LOCAL_TIMER_CONTROL,Local Timer Control
+0x38,LOCAL_TIMER_IRQ,Local Timer Reload and Interrupt
+0x40,TIMER_CNTRL0,Timer Interrupt Control for ARM Core 0
+0x44,TIMER_CNTRL1,Timer Interrupt Control for ARM Core 1
+0x48,TIMER_CNTRL2,Timer Interrupt Control for ARM Core 2
+0x4c,TIMER_CNTRL3,Timer Interrupt Control for ARM Core 3
+0x50,MAILBOX_CNTRL0,Mailbox Interrupt Control for ARM Core 0
+0x54,MAILBOX_CNTRL1,Mailbox Interrupt Control for ARM Core 1
+0x58,MAILBOX_CNTRL2,Mailbox Interrupt Control for ARM Core 2
+0x5c,MAILBOX_CNTRL3,Mailbox Interrupt Control for ARM Core 3
+0x60,IRQ_SOURCE0,IRQ Source flags for ARM Core 0
+0x64,IRQ_SOURCE1,IRQ Source flags for ARM Core 1
+0x68,IRQ_SOURCE2,IRQ Source flags for ARM Core 2
+0x6c,IRQ_SOURCE3,IRQ Source flags for ARM Core 3
+0x70,FIQ_SOURCE0,FIQ Source flags for ARM Core 0
+0x74,FIQ_SOURCE1,FIQ Source flags for ARM Core 1
+0x78,FIQ_SOURCE2,FIQ Source flags for ARM Core 2
+0x7c,FIQ_SOURCE3,FIQ Source flags for ARM Core 3
