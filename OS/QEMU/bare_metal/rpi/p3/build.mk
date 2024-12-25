@@ -16,7 +16,7 @@ build: copy_sym_section generate_sym_section
 
 # Rule to build symbol_area.o from symbol_area.s
 $(ARCH_DIR)/symbol_area.o: $(ARCH_DIR)/symbol_area.s
-	@printf "%-10s %-15s %s\n" "" "[CCS]" "$(subst $(ROOT_DIR)/,,$(PWD)/)$<"
+	@printf "%-10s %-15s %s\n" "" "[CC]" "$(subst $(ROOT_DIR)/,,$(PWD)/)$<"
 	@$(CC) $(ASFLAGS) -c $< -o $@
 
 # Generate the symbol section
