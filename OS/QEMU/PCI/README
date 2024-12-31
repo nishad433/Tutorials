@@ -48,7 +48,7 @@ Planning to have memory IO regions, DMA and IRQ for the PCI device.
 	• Set the Environment Variables
 		export PATH=$PATH:/path/to/your/toolchain/bin
 
-▪ P1: Load a linux kernel and a small rootfs using qemu-system-arm or qemu-system-aarch64
+▪ P0: Load a linux kernel and a small rootfs using qemu-system-arm or qemu-system-aarch64
 	• Using kernel 4.19.287 and busybox
 	• Download arm/aarch64 toolchain. (use crosstool-ng or download from arm website)
 	• Download Linux kernel 4.19.287 : wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.287.tar.xz  or wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.287.tar.gz
@@ -132,3 +132,9 @@ Planning to have memory IO regions, DMA and IRQ for the PCI device.
 	• Run QEMU aarch64 emulator with Kernel image and rootfs just built.
 		./qemu-system-aarch64 -M virt -cpu cortex-a53 -nographic -smp 1 -kernel /tmp/ncc/linux-4.19.287/arch/arm64/boot/Image -append "rootwait root=/dev/vda console=ttyAMA0" -drive file=/tmp/ncc/rootfs.img,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0	
 
+
+▪ P1: Create a custom PCI device. (See docs/devel/qom.rst).
+	• Source file (pci_ncc.c) for our custom PCI device is added to hw/pci, Update hw/pci/Kconfig to add a config, and then add that config to hw/pci/meson.build, so that qemu build system can compile it. Run make menuconfig to enable the config.
+	• See pci_ncc.c (for QOM model and QEMU apis documentation)
+	• Run QEMU arch64 emulator 
+		./qemu-system-aarch64 -M virt -cpu cortex-a53 -nographic -smp 1 -kernel /tmp/ncc/linux-4.19.287/arch/arm64/boot/Image -append "rootwait root=/dev/vda console=ttyAMA0" -drive file=/tmp/ncc/rootfs.img,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 -device ncc-pci -d guest_errors -D /tmp/ncc_qemu.log 
